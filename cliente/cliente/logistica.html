@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancosol - Gestión de Logística</title>
+    <link rel="stylesheet" href="css/logistica.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Panel de Asignación y Logística</h1>
+            <nav>
+                <button class="btn-nav" onclick="window.location.href='admin.html'">Volver al Inicio</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Listado de Tiendas para la Campaña</h2>
+            <p>Selecciona una tienda para gestionar su personal asignado.</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre de la Tienda</th>
+                            <th>Localidad / Distrito</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-tiendas">
+                        <tr>
+                            <td colspan="4">Conectando con el servidor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-gestion" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal()">&times;</span>
+            <h3>Gestionar Responsable</h3>
+            <hr>
+            <div class="form-group">
+                <label>Tienda seleccionada:</label>
+                <p><strong id="nombre-tienda-modal"></strong></p>
+                <input type="hidden" id="id-tienda-modal">
+            </div>
+            
+            <div class="form-group">
+                <label for="select-coordinador">Asignar Coordinador:</label>
+                <select id="select-coordinador">
+                    <option value="">-- Selecciona un perfil --</option>
+                </select>
+            </div>
+
+            <div class="acciones-modal">
+                <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button id="btn-confirmar-asignacion" class="btn-confirm">Confirmar Asignación</button>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="css/logistica.css">.
+    <script src="js/api.js"></script>
+    <script src="js/logistica.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Colaboradores - BancoSol</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+    
+    <div class="banner-superior">
+        <h2>Listado completo de Colaboradores</h2>
+    </div>
+
+    <div class="contenedor-tabla">
+        
+        <div class="filtros-container">
+            
+            <div class="filtros-fila-superior">
+                <input type="text" id="buscar-nombre" class="filtro-input" placeholder="Buscar por nombre o localidad..." onkeydown="comprobarEnter(event)">
+                
+                <select id="filtro-estado" class="filtro-select">
+                    <option value="Todos">Todos los estados</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="Aprobado">Aprobado</option>
+                    <option value="Rechazado">Rechazado</option>
+                </select>
+            </div>
+
+            <button class="btn-buscar" onclick="aplicarFiltros()">Buscar</button>
+            
+        </div>
+
+        <table id="tabla-colaboradores">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Entidad</th>
+                    <th>Código</th>
+                    <th>Localidad</th>
+                    <th>Estado</th>
+                    <th>Contactos</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+            <a href="admin.html" class="btn-volver">← Volver al Panel</a>
+        </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    
+    <script src="js/admin.js"></script>
+</body>
+</html>

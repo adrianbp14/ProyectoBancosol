@@ -1,0 +1,309 @@
+/* Variables globales: Cambia estos colores y se actualizará toda tu web */
+:root {
+    --primary-color: #4f46e5;      /* Morado moderno */
+    --primary-hover: #4338ca;
+    --bg-color: #f3f4f6;           /* Gris muy claro para el fondo */
+    --card-bg: #ffffff;            /* Blanco para el contenedor */
+    --text-color: #1f2937;
+    --error-color: #ef4444;
+    --success-color: #10b981;
+    --border-radius: 8px;
+}
+
+/* Configuración base */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Centra el contenido verticalmente */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f6f9
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Contenedor principal (Card) */
+#login-form {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; /* Tamaño ideal para login */
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* Inputs y Etiquetas */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #d1d5db;
+    border-radius: var(--border-radius);
+    box-sizing: border-box; /* Evita que el input se salga del contenedor */
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    right: 2px solid var(--primary-color);
+}
+
+/* Botón estilizado */
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+/* Mensajes de feedback */
+#message {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    min-height: 1.2rem;
+}
+
+.error { color: var(--error-color); }
+.success { color: var(--success-color); }
+
+/* Contenedor del input de password */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Ajuste del input para que el texto no se pise con el botón */
+.password-wrapper input {
+    padding-right: 45px; /* Espacio extra a la derecha */
+    margin-bottom: 0;    /* Quitamos el margen para que el wrapper maneje el espacio */
+}
+
+/* El botón de "ojo" */
+#toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* Centrado vertical perfecto */
+    background: none;
+    border: none;
+    width: auto;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #6b7280;
+}
+
+#toggle-password:hover {
+    background: none; /* Evitamos el fondo morado del botón principal */
+    opacity: 0.7;
+}
+
+/* Re-añadimos el margen al wrapper para separar del botón de login */
+.password-wrapper {
+    margin-bottom: 1.25rem;
+}
+
+/* Ejemplo de estilos para elementos en worker.html */
+.sidebar {
+    background-color: var(--primary-color); /* El mismo color que el botón de login */
+    color: white;
+}
+
+.card-usuario {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    border: 1px solid #ddd;
+}
+
+
+.btn-volver {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-volver:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos de la Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+th {
+    background-color: #004b87;
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+}
+
+tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Etiquetas de Estado */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.status-pendiente {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-aprobado {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Estilo para los contactos */
+.contacto-info {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+/* Contenedor central para que la tabla no ocupe toda la pantalla */
+.contenedor-tabla {
+    max-width: 1200px;
+    margin: 40px auto; /* 40px de espacio arriba/abajo, centrado a los lados */
+    padding: 0 20px;
+}
+
+/* --- Barra de Búsqueda y Filtros --- */
+
+/* Contenedor principal: ahora se apila en vertical (columna) */
+.filtros-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; /* Centra el botón de abajo */
+    gap: 15px;
+    margin-bottom: 30px;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* El "piso de arriba" (buscador + desplegable) */
+.filtros-fila-superior {
+    display: flex;
+    width: 100%; /* Ocupa todo el ancho de la tabla */
+    gap: 15px;
+}
+
+/* Mantenemos las alturas iguales */
+.filtro-input, .filtro-select, .btn-buscar {
+    height: 45px;
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.filtro-input {
+    flex: 1; /* El buscador cede espacio al select pero ocupa el resto */
+}
+
+.filtro-select {
+    cursor: pointer;
+    background-color: rgb(206, 206, 206);
+    min-width: 200px; /* Un tamaño fijo para que no se aplaste */
+}
+
+/* El botón ahora tiene su propio tamaño y diseño */
+.btn-buscar {
+    background-color: #004b87;
+    color: rgb(206, 206, 206);
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.2s;
+    width: 200px; /* Ancho fijo para que no sea gigante */
+    border-radius: 25px; /* Bordes un poco más redondeados para que parezca un botón principal */
+}
+
+.btn-buscar:hover {
+    background-color: #004b87;
+}
+
+body.admin-body {
+    display: block;       /* Apaga el flex que centra el login verticalmente */
+    margin: 0 !important; /* Fuerza a que no haya márgenes arriba */
+    padding: 0;
+    height: auto;         /* Deja que la página crezca según el contenido */
+    background-color: #f4f6f9; /* Fondo gris claro */
+}
+
+.banner-superior {
+    background-color: #004b87; 
+    width: 100%;
+    margin: 0;
+    padding: 30px 20px;
+    text-align: center;
+    box-sizing: border-box;
+    /* Esto evita que el margen del h2 empuje el banner hacia abajo */
+    overflow: hidden; 
+}
+
+.banner-superior h2 {
+    color: white;
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: bold;
+}

@@ -1,0 +1,8 @@
+# Excluir cosas de IntelliJ y Java
+.idea/
+*.iml
+backend/target/
+
+# Excluir cosas del sistema operativo
+.DS_Store
+Thumbs.db

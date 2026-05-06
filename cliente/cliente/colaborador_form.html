@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta Colaborador - BancoSol</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/api.js"></script>
+</head>
+<body>
+
+<nav class="sidebar">
+    <div class="sidebar-header">BANCOSOL App</div>
+    <ul class="nav-menu">
+        <li><a href="dashboard_coordinador.html" class="nav-item">Volver al Dashboard</a></li>
+        <li><a href="#" class="nav-item active">Nuevo Colaborador</a></li>
+        <li><a href="#" class="nav-item">Listado Colaboradores</a></li>
+    </ul>
+</nav>
+
+<main class="main-content">
+    <header class="top-header">
+        <strong>JM Cobos (Coordinador)</strong>
+    </header>
+
+    <section class="form-container">
+        <div class="form-card">
+            <h1 style="margin-bottom: 20px; color: #2c3e50;">Alta de Entidad Colaboradora</h1>
+
+            <div id="mensajeAlerta" class="alert" style="display: none;"></div>
+
+            <form id="formularioColaborador">
+
+                <h2 class="form-section-title">Datos de la Entidad</h2>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="nombre">Nombre de la Entidad / Organización *</label>
+                        <input type="text" id="nombre" required placeholder="Ej: Ayuntamiento de Almáchar">
+                    </div>
+                    <div class="form-group">
+                        <label for="codigo">Código BancoSol</label>
+                        <input type="text" id="codigo" placeholder="Ej: A0362">
+                    </div>
+                    <div class="form-group checkbox-group" style="justify-content: flex-start; padding-top: 25px;">
+                        <input type="checkbox" id="vinculado">
+                        <label for="vinculado" style="margin:0;">Entidad Vinculada a BancoSol</label>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="domicilio">Domicilio / Dirección física</label>
+                        <input type="text" id="domicilio" placeholder="Calle, número, portal...">
+                    </div>
+                    <div class="form-group">
+                        <label for="localidad">Localidad</label>
+                        <input type="text" id="localidad" placeholder="Ej: Rincón de la Victoria">
+                    </div>
+                    <div class="form-group">
+                        <label for="cpostal">Código Postal</label>
+                        <input type="text" id="cpostal" maxlength="5" placeholder="Ej: 29730">
+                    </div>
+                    <div class="form-group">
+                        <label for="voluntarios">Nº Voluntarios Estimado</label>
+                        <input type="number" id="voluntarios" placeholder="Ej: 15" style="padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                    </div>
+                </div>
+
+                <h2 class="form-section-title">Personas de Contacto (Máx. 3)</h2>
+                <div id="contactosContainer">
+                </div>
+
+                <button type="button" id="btnAñadirContacto" class="btn-add">+ Añadir Persona de Contacto</button>
+
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn-submit">Guardar Colaborador (Enviar a Validación)</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script>
+    // --- 1. LÓGICA PARA AÑADIR/QUITAR CONTACTOS DINÁMICOS ---
+    const contactosContainer = document.getElementById('contactosContainer');
+    const btnAñadirContacto = document.getElementById('btnAñadirContacto');
+    let contadorContactos = 0;
+    const MAX_CONTACTOS = 3;
+
+    function crearPlantillaContacto() {
+        contadorContactos++;
+        const div = document.createElement('div');
+        div.className = 'contacto-card';
+        div.id = `contacto-${contadorContactos}`;
+
+        div.innerHTML = `
+                <strong style="display:block; margin-bottom:10px; color:#004b87;">Contacto ${contadorContactos} ${contadorContactos === 1 ? '(Principal)' : ''}</strong>
+                ${contadorContactos > 1 ? `<button type="button" class="btn-remove" onclick="eliminarContacto(${contadorContactos})">X Quitar</button>` : ''}
+
+                <div class="form-grid" style="margin-bottom: 0;">
+                    <div class="form-group full-width">
+                        <label>Nombre y Cargo *</label>
+                        <input type="text" class="contacto-nombre" required placeholder="Ej: Maria Vallejo (Concejala)">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono *</label>
+                        <input type="tel" class="contacto-telefono" required placeholder="Ej: 600 123 456">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="contacto-email" placeholder="Ej: correo@ejemplo.com">
+                    </div>
+                </div>
+            `;
+        contactosContainer.appendChild(div);
+        actualizarBotonAñadir();
+    }
+
+    function eliminarContacto(id) {
+        const elemento = document.getElementById(`contacto-${id}`);
+        if (elemento) {
+            elemento.remove();
+            contadorContactos--;
+            actualizarBotonAñadir();
+        }
+    }
+
+    function actualizarBotonAñadir() {
+        if (document.querySelectorAll('.contacto-card').length >= MAX_CONTACTOS) {
+            btnAñadirContacto.style.display = 'none';
+        } else {
+            btnAñadirContacto.style.display = 'inline-block';
+        }
+    }
+
+    // Inicializamos con 1 contacto por defecto
+    crearPlantillaContacto();
+
+    btnAñadirContacto.addEventListener('click', () => {
+        if (document.querySelectorAll('.contacto-card').length < MAX_CONTACTOS) {
+            crearPlantillaContacto();
+        }
+    });
+
+
+    // --- 2. LÓGICA DE ENVÍO A SPRING BOOT ---
+    document.getElementById('formularioColaborador').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const payload = {
+            nombre: document.getElementById('nombre').value,
+            codigo_bancosol: document.getElementById('codigo').value,
+            vinculado_bancosol: document.getElementById('vinculado').checked,
+            domicilio: document.getElementById('domicilio').value,
+            localidad: document.getElementById('localidad').value,
+            codigo_postal: document.getElementById('cpostal').value,
+            num_voluntarios_estimado: document.getElementById('voluntarios').value || 0,
+        };
+
+        const tarjetasContacto = document.querySelectorAll('.contacto-card');
+        const contactosArray = [];
+
+        tarjetasContacto.forEach((tarjeta, index) => {
+            contactosArray.push({
+                nombre_contacto: tarjeta.querySelector('.contacto-nombre').value,
+                telefono: tarjeta.querySelector('.contacto-telefono').value,
+                email: tarjeta.querySelector('.contacto-email').value,
+                es_principal: index === 0
+            });
+        });
+
+        payload.contactos = contactosArray;
+
+        console.log("Datos a enviar a Spring Boot:", JSON.stringify(payload, null, 2));
+
+        const token = localStorage.getItem('token_bancosol') || 'token_falso_para_pruebas';
+        const mensajeAlerta = document.getElementById('mensajeAlerta');
+
+    // 2. Usar la función separada que pide tu profesor
+    try {
+        // Llamamos a la función limpia de api_colaboradores.js
+        await apiCrearColaborador(payload);
+
+        // Si no hay error, mostramos éxito visualmente
+        mensajeAlerta.className = 'alert success';
+        mensajeAlerta.innerText = "¡Colaborador guardado correctamente! Pendiente de validación.";
+        
+        // Limpiamos el formulario
+        document.getElementById('formularioColaborador').reset();
+        
+    } catch (error) {
+        // Si la función de API lanza un error, mostramos la alerta roja
+        mensajeAlerta.className = 'alert error';
+        mensajeAlerta.innerText = "Error al guardar el colaborador. Comprueba los datos o la conexión.";
+    }
+    
+    mensajeAlerta.style.display = 'block';
+    window.scrollTo(0, 0);
+    });
+</script>
+</body>
+</html>
