@@ -1,4 +1,4 @@
-package es.uma.taw.bancosol.repository;
+package es.uma.taw.bancosol.dao;
 
 import es.uma.taw.bancosol.entity.Rol;
 import org.springframework.data.jpa.repository.JpaRepository;

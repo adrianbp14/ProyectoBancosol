@@ -2,15 +2,35 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mapa de Tiendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Tiendas | Localizador</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        #map { height: 600px; width: 100%; border: 1px solid #ccc; margin-top: 20px; }
-    </style>
+    <!-- Google Fonts para un look moderno -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/mapa.css">
 </head>
 <body>
-<h1>Localización de Tiendas</h1>
-<div id="map"></div>
+
+<div class="container">
+    <header>
+        <h1>📍 Localización de Tiendas</h1>
+        <p>Gestiona y visualiza los puntos de venta en tiempo real</p>
+    </header>
+
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" id="busquedaNombre" placeholder="Buscar por nombre de tienda...">
+        </div>
+        <div class="input-group">
+            <input type="text" id="busquedaCP" placeholder="Código Postal (ej: 28001)">
+        </div>
+        <button id="btnLimpiar" class="btn-secondary">Limpiar Filtros</button>
+    </div>
+
+    <div id="map-wrapper">
+        <div id="map"></div>
+    </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="js/api.js" defer></script>

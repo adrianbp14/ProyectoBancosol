@@ -1,11 +1,22 @@
 package es.uma.taw.bancosol.dto;
-import lombok.Data;
 
-@Data
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TiendaMapaDTO {
     private Integer id;
+
+    @JsonProperty("resena_nombre") // Coincide con JS
     private String nombre;
+
     private String domicilio;
+
+    @JsonProperty("codigo_postal") // ¡Esto faltaba!
+    private String codigoPostal;
+
     private String localidad;
     private Double latitud;
     private Double longitud;
