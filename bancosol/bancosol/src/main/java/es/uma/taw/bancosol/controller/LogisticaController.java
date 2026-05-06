@@ -1,7 +1,7 @@
 package es.uma.taw.bancosol.controller;
 
 import es.uma.taw.bancosol.entity.Tienda;
-import es.uma.taw.bancosol.repository.TiendaRepository;
+import es.uma.taw.bancosol.dao.TiendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,7 @@ package es.uma.taw.bancosol;
 
 import es.uma.taw.bancosol.entity.Colaborador;
 import es.uma.taw.bancosol.entity.ContactoColaborador;
-import es.uma.taw.bancosol.repository.ColaboradorRepository;
+import es.uma.taw.bancosol.dao.ColaboradorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
