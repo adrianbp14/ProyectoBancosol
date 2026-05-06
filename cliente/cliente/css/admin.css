@@ -1,0 +1,110 @@
+/* =========================================
+   ESTILOS ESPECÍFICOS DEL DASHBOARD ADMIN
+   ========================================= */
+
+/* Contenedor principal que separa la izquierda del centro */
+.admin-layout {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    align-items: flex-start; /* Evita que la barra lateral se estire hacia abajo si hay poco contenido */
+}
+
+/* Barra lateral izquierda */
+.sidebar-nav {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    padding: 20px;
+    width: 250px;
+    display: flex; 
+    flex-direction: column;
+    min-height: 300px;
+    justify-content: space-between;
+    border-top: 6px solid #4f46e5;
+    background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%); 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 12px 15px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    display: block;
+    font-weight: 600;
+}
+
+/* Efecto hover con tu color morado/azul solicitado */
+.nav-links a:hover {
+    background-color: #4f46e5;
+    color: white;
+    transform: translateX(5px); /* Pequeño empujón a la derecha */
+}
+
+/* Contenido Central */
+.dashboard-content {
+    flex: 1; /* Ocupa todo el espacio restante a la derecha */
+}
+
+/* Contenedor de las cajas con grid para que mantengan margenes exactos */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Se adaptan solas al ancho */
+    gap: 20px;
+}
+
+/* Estilo de las cajas (Tarjetas) */
+.dashboard-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 30px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    /* Detalle de color exacto solicitado en el borde inferior */
+    border-bottom: 4px solid #4f46e5; 
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px); /* La caja "flota" hacia arriba */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color); /* El texto cambia a tu color base */
+}
+
+#btn-cierre-sesion {
+    background-color: #4f46e5; /* Tu azul corporativo */
+    color: white;
+    margin-top: 20px; /* Lo separa de los enlaces de arriba */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 30px; /* ¡Aquí está la magia! 30px lo hace estilo "píldora" */
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Transición suave para todos los efectos */
+    width: 100%; /* Ocupa todo el ancho de la barra lateral */
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); /* Sombra suave con tu color */
+}
+
+/* Efecto al pasar el ratón */
+#btn-cierre-sesion:hover {
+    background-color: var(--primary-hover); /* Un azul ligeramente más oscuro */
+    transform: scale(1.03); /* Se hace un 3% más grande */
+    box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4); /* La sombra se hace más grande */
+}

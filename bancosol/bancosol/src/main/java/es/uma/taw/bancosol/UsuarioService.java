@@ -1,7 +1,7 @@
 package es.uma.taw.bancosol;
 
 import es.uma.taw.bancosol.entity.Usuario;
-import es.uma.taw.bancosol.repository.UsuarioRepository;
+import es.uma.taw.bancosol.dao.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
