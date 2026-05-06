@@ -3,7 +3,7 @@
 // ==========================================
 const API_BASE = 'http://localhost:8080'; 
 
-const API_AUTH = `${API_BASE}/auth`;               // Autenticación y usuarios
+const API_AUTH = `${API_BASE}/auth`;             // Autenticación y usuarios
 const API_TIENDAS = `${API_BASE}/api/tiendas`;     // Tiendas para el mapa
 const API_LOGISTICA = `${API_BASE}/api/logistica/tiendas`; // Logística
 const API_COLABORADORES = `${API_BASE}/api/colaboradores`; // Colaboradores
@@ -30,22 +30,21 @@ async function iniciarSesion(username, password) {
 }
 
 async function cargarUsuarios() {
-  const LOCAL_ROUTE = "/users";
-  const respuesta = await fetch(API_AUTH + LOCAL_ROUTE, {
+  const token = sessionStorage.getItem('token');
+  
+  // Llamamos exactamente a http://localhost:8080/auth/users
+  const respuesta = await fetch(`${API_AUTH}/users`, {
+    method: 'GET',
     headers: {
-      'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json'
     }
   });
 
   if (respuesta.ok) {
-    const usuariosJson = await respuesta.json();
-    if (usuariosJson.success) {
-      return usuariosJson.users; 
-    } else {
-      throw new Error('Error al cargar los usuarios: ' + usuariosJson.message);
-    }
+    return await respuesta.json(); // Retorna la lista directamente[cite: 8]
   } else {
-    throw new Error(`HTTP error: ${respuesta.status} - ${respuesta.statusText}`);
+    throw new Error("Fallo en la carga de usuarios");
   }
 }
 

@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // 1. Cargar y renderizar la tabla
 async function inicializarPagina() {
     try {
-        // Llamamos a la función de tu api.js
         const tiendas = await obtenerTiendasLogistica(); 
         const tbody = document.getElementById('tabla-tiendas');
         tbody.innerHTML = ''; 
@@ -27,8 +26,6 @@ async function inicializarPagina() {
 
         tiendas.forEach(tienda => {
             const nombreLocalidad = tienda.localidad ? tienda.localidad.nombre : 'No definida';
-            
-            
             tbody.innerHTML += `
                 <tr>
                     <td>${tienda.id_tienda}</td>
@@ -42,25 +39,33 @@ async function inicializarPagina() {
                 </tr>
             `;
         });
-        // 2. Cargamos los usuarios para el desplegable de la modal
-        // Lo hacemos aquí para que ya estén listos cuando el usuario pulse "Asignar"
+
+        // 2. Cargamos los usuarios con "red de seguridad" para el error de CORS
         try {
             const usuarios = await cargarUsuarios(); 
-            console.log("Lo que devuelve cargarUsuarios:", usuarios); // <--- AÑADE ESTO
-            const select = document.getElementById('select-coordinador');
+            console.log("¡ÉXITO! Datos recibidos del servidor:", usuarios); 
             
-            // Limpiamos el select por si acaso, manteniendo la opción por defecto
+            const select = document.getElementById('select-coordinador');
             select.innerHTML = '<option value="">-- Selecciona un perfil --</option>';
             
-            usuarios.forEach(u => {
+            // Normalizamos la lista (por si viene dentro de un objeto 'users')
+            const listaUsuarios = Array.isArray(usuarios) ? usuarios : (usuarios.users || []);
+
+            listaUsuarios.forEach(u => {
                 const option = document.createElement('option');
-                option.value = u.id; // El ID del usuario para enviarlo luego al backend
-                option.textContent = `${u.nombre} ${u.apellidos || ''}`; // Nombre completo
+                // Usamos los nombres exactos de tu base de datos
+                option.value = u.id_usuario; 
+                option.textContent = u.nombre_completo; 
                 select.appendChild(option);
             });
-            console.log("Usuarios cargados correctamente en el desplegable");
-        } catch (errorUsuarios) {
-            console.error("Error al cargar los usuarios para el select:", errorUsuarios);
+            
+            console.log("Desplegable actualizado con datos reales.");
+
+        } catch (error) {
+            // Si llegamos aquí, la consola nos dirá exactamente QUÉ falló
+            console.error("ERROR REAL AL CARGAR USUARIOS:", error);
+            const select = document.getElementById('select-coordinador');
+            select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
         }
 
     } catch (error) {

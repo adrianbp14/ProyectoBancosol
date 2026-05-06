@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*") // Permite que tu HTML se conecte desde cualquier sitio
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class AuthController {
 
     @Autowired
@@ -38,5 +39,19 @@ public class AuthController {
         } else {
             return ResponseEntity.status(401).body("Usuario o contraseña incorrectos");
         }
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> listarUsuarios() {
+        List<Usuario> lista = usuarioService.listarUsuarios();
+
+        List<Map<String, Object>> respuesta = lista.stream().map(u -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id_usuario", u.getId_usuario());
+            map.put("nombre_completo", u.getNombre_completo());
+            return map;
+        }).toList();
+
+        return ResponseEntity.ok(respuesta);
     }
 }
