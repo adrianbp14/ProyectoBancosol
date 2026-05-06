@@ -1,3 +1,13 @@
+document.addEventListener("DOMContentLoaded", () => {
+    // Verificamos si hay token al cargar (Seguridad de cliente)
+    if (!sessionStorage.getItem('token')) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    inicializarPagina();
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const map = L.map('map').setView([40.4167, -3.7033], 6);
     let allTiendas = []; // Guardaremos todas para filtrar sin llamar a la API cada vez
