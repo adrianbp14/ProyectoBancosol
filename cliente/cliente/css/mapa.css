@@ -85,3 +85,61 @@ input:focus {
     border-radius: 8px;
     padding: 5px;
 }
+
+
+/* Estilo para el botón de navegación principal */
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: #475569; /* Gris azulado oscuro */
+    border: 1px solid #e2e8f0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Efecto Hover (al pasar el ratón) */
+.btn-nav:hover {
+    background-color: #f8fafc;
+    color: var(--primary); /* El azul principal que definimos antes */
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Efecto Active (al hacer clic) */
+.btn-nav:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Opcional: Añadir un icono de flecha mediante CSS */
+.btn-nav::before {
+    content: '←';
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* Botones de acción (si los usas dentro del mapa) */
+.btn-action {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-action:hover {
+    background: #1d4ed8;
+}
