@@ -1,0 +1,28 @@
+package es.uma.taw.bancosol.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+
+@Entity
+@Table(name = "tienda_campana_coordinador")
+@Getter
+@Setter
+public class TiendaCampanaCoordinador {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id; // Si tiene un ID autogenerado, si no, usa clave compuesta
+
+    @ManyToOne
+    @JoinColumn(name = "id_tienda")
+    private Tienda tienda;
+
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
+
+    @ManyToOne
+    @JoinColumn(name = "id_campana")
+    private Campana campana;
+}

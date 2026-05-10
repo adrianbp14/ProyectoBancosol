@@ -173,22 +173,23 @@ async function obtenerTiendasLogistica() {
 
 async function asignarCoordinadorTienda(idTienda, idCoordinador, idCampana) {
     const token = sessionStorage.getItem('token');
-    const respuesta = await fetch(`${API_LOGISTICA}/asignar`, {
+    const respuesta = await fetch(`${API_BASE}/api/logistica/asignar`, { 
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            idTienda: idTienda,
-            idCoordinador: idCoordinador,
-            idCampana: idCampana
+            idTienda: parseInt(idTienda),
+            idCoordinador: parseInt(idCoordinador),
+            idCampana: parseInt(idCampana)
         })
     });
 
-    if (!respuesta.ok) {
-        const errorData = await respuesta.json();
-        throw new Error(errorData.mensaje || "Error en la asignación");
+    if (respuesta.ok) {
+        return await respuesta.json();
+    } else {
+        const mensajeError = await respuesta.text(); 
+        throw new Error(mensajeError); 
     }
-    return await respuesta.json();
 }
