@@ -29,10 +29,10 @@ async function inicializarPagina() {
             tbody.innerHTML += `
                 <tr>
                     <td>${tienda.id_tienda}</td>
-                    <td>${tienda.resenaNombre}</td>
+                    <td>${tienda.resena_nombre}</td>
                     <td>${nombreLocalidad}</td>
                     <td>
-                        <button class="btn-action" onclick="abrirModal(${tienda.id_tienda}, '${tienda.resenaNombre}')">
+                        <button class="btn-action" onclick="abrirModal(${tienda.id_tienda}, '${tienda.resena_nombre}')">
                             Asignar
                         </button>
                     </td>
@@ -91,18 +91,28 @@ document.getElementById('btn-confirmar-asignacion').onclick = async () => {
     const idTienda = document.getElementById('id-tienda-modal').value;
     const idCoord = document.getElementById('select-coordinador').value;
     
+    // Por ahora, usamos el ID 1 (Primavera) o 2 (Gran Recogida) 
+    // hasta que tengamos un selector de campaña en el HTML
+    const idCampana = 1; 
+    
     if(!idCoord) {
         alert("Por favor, selecciona un coordinador.");
         return;
     }
 
     try {
-        // Aquí llamarías a la función POST de tu api.js
-        console.log(`Asignando tienda ${idTienda} a coordinador ${idCoord}`);
-        alert("Asignación procesada.");
+        // Llamamos a la función de api.js con los 3 parámetros
+        await asignarCoordinadorTienda(idTienda, idCoord, idCampana);
+        
+        alert("¡Asignación guardada con éxito en la tabla de coordinadores!");
         cerrarModal();
-        inicializarPagina(); 
+        inicializarPagina(); // Recarga la tabla para ver cambios
     } catch (error) {
+        if (error.message.includes("duplicate") || error.message.includes("exists")) {
+            alert("⚠️ Esta tienda ya tiene un coordinador asignado para esta campaña.");
+        } else {
+        console.error("Error al asignar:", error);
         alert("Error: " + error.message);
+        }
     }
 };

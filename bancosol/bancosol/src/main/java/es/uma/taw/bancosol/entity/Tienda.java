@@ -66,4 +66,11 @@ public class Tienda {
     @JoinColumn(name = "id_localidad")
     @JsonProperty("localidad")
     private Localidad localidad;
+
+    // Nueva relación con Usuario (Coordinador)
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    @JsonProperty("usuario")
+    private Usuario usuario;
+
 }
