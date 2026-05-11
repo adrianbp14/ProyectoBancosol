@@ -66,6 +66,31 @@
             </div>
         </div>
     </div>
+    <div id="modal-voluntario" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalVoluntario()">&times;</span>
+            <h3>Gestionar Voluntarios</h3>
+            <hr>
+            <div class="form-group">
+                <label>Tienda seleccionada:</label>
+                <p><strong id="nombre-tienda-voluntario"></strong></p>
+                <input type="hidden" id="id-tienda-voluntario">
+            </div>
+
+            <div class="form-group">
+                <label for="select-voluntario">Asignar Voluntario(s):</label>
+                <select id="select-voluntario" multiple style="height: 120px;">
+                    <option value="" disabled>-- Selecciona uno o varios --</option>
+                </select>
+                <small style="display:block; margin-top:5px; color:#666;">*Mantén pulsado Ctrl (Windows) o Cmd (Mac) para seleccionar varios.</small>
+            </div>
+
+            <div class="acciones-modal">
+                <button class="btn-cancel" onclick="cerrarModalVoluntario()">Cancelar</button>
+                <button id="btn-confirmar-voluntario" class="btn-confirm">Confirmar Asignación</button>
+            </div>
+        </div>
+    </div>
 
     <link rel="stylesheet" href="css/logistica.css">.
     <script src="js/api.js"></script>

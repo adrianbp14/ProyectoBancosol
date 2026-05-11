@@ -33,7 +33,10 @@ async function inicializarPagina() {
                     <td>${nombreLocalidad}</td>
                     <td>
                         <button class="btn-action" onclick="abrirModal(${tienda.id_tienda}, '${tienda.resena_nombre}')">
-                            Asignar
+                            Coord.
+                        </button>
+                        <button class="btn-action" style="background-color: #28a745; margin-left: 5px;" onclick="abrirModalVoluntario(${tienda.id_tienda}, '${tienda.resena_nombre}')">
+                            Voluntarios
                         </button>
                     </td>
                 </tr>
@@ -42,7 +45,24 @@ async function inicializarPagina() {
 
         // 2. Cargamos los usuarios con "red de seguridad" para el error de CORS
         try {
-            const usuarios = await cargarUsuarios(); 
+            const usuarios = await cargarUsuarios();
+            // 3. Cargamos los voluntarios para la nueva modal
+            try {
+                const voluntarios = await obtenerListaVoluntarios();
+                const selectVoluntarios = document.getElementById('select-voluntario');
+
+                // Si la API de colaboradores devuelve un array directo o paginado
+                const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
+
+                listaVoluntarios.forEach(v => {
+                    const option = document.createElement('option');
+                    option.value = v.id_voluntario;
+                    option.textContent = `${v.nombre} ${v.apellidos || ''}`;
+                    selectVoluntarios.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error al cargar voluntarios:", error);
+            }
             console.log("¡ÉXITO! Datos recibidos del servidor:", usuarios); 
             
             const select = document.getElementById('select-coordinador');
@@ -113,6 +133,54 @@ document.getElementById('btn-confirmar-asignacion').onclick = async () => {
         } else {
         console.error("Error al asignar:", error);
         alert("Error: " + error.message);
+        }
+    }
+};
+
+// ==========================================
+// 4. Control de la Modal de Voluntarios
+// ==========================================
+function abrirModalVoluntario(id, nombre) {
+    document.getElementById('id-tienda-voluntario').value = id;
+    document.getElementById('nombre-tienda-voluntario').innerText = nombre;
+    // Limpiamos selecciones previas
+    document.getElementById('select-voluntario').selectedIndex = -1;
+    document.getElementById('modal-voluntario').style.display = 'block';
+}
+
+function cerrarModalVoluntario() {
+    document.getElementById('modal-voluntario').style.display = 'none';
+}
+
+// 5. Confirmar asignación múltiple de voluntarios
+document.getElementById('btn-confirmar-voluntario').onclick = async () => {
+    const idTienda = document.getElementById('id-tienda-voluntario').value;
+    const selectOptions = document.getElementById('select-voluntario').selectedOptions;
+
+    // Convertimos las opciones seleccionadas en un array de IDs
+    const voluntariosSeleccionados = Array.from(selectOptions).map(opt => opt.value);
+
+    const idCampana = 1; // Igual que con el coordinador
+
+    if(voluntariosSeleccionados.length === 0) {
+        alert("Por favor, selecciona al menos un voluntario.");
+        return;
+    }
+
+    try {
+        // Ejecutamos la promesa de asignación por cada voluntario seleccionado
+        for (let idVol of voluntariosSeleccionados) {
+            await asignarVoluntarioTienda(idTienda, idVol, idCampana);
+        }
+
+        alert(`¡${voluntariosSeleccionados.length} voluntario(s) asignado(s) con éxito!`);
+        cerrarModalVoluntario();
+    } catch (error) {
+        if (error.message.includes("duplicate") || error.message.includes("exists")) {
+            alert("⚠️ Algunos de estos voluntarios ya estaban asignados a esta tienda.");
+        } else {
+            console.error("Error al asignar voluntario:", error);
+            alert("Error: " + error.message);
         }
     }
 };

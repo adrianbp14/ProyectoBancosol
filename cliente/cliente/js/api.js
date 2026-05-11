@@ -7,6 +7,7 @@ const API_AUTH = `${API_BASE}/auth`;             // Autenticación y usuarios
 const API_TIENDAS = `${API_BASE}/api/tiendas`;     // Tiendas para el mapa
 const API_LOGISTICA = `${API_BASE}/api/logistica/tiendas`; // Logística
 const API_COLABORADORES = `${API_BASE}/api/colaboradores`; // Colaboradores
+const API_VOLUNTARIOS = `${API_BASE}/api/voluntarios`; // Ruta para tu tabla 'voluntario'
 
 // ==========================================
 // 🔐 AUTENTICACIÓN Y USUARIOS
@@ -191,5 +192,51 @@ async function asignarCoordinadorTienda(idTienda, idCoordinador, idCampana) {
     } else {
         const mensajeError = await respuesta.text(); 
         throw new Error(mensajeError); 
+    }
+}
+
+// ==========================================
+// 🙋‍♂️ GESTIÓN DE VOLUNTARIOS EN LOGÍSTICA
+// ==========================================
+
+// Obtener lista de voluntarios (CORREGIDO: Ahora usa API_VOLUNTARIOS)
+async function obtenerListaVoluntarios() {
+    const token = sessionStorage.getItem('token');
+    const respuesta = await fetch(API_VOLUNTARIOS, { // ¡Cambio importante aquí!
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (respuesta.ok) {
+        return await respuesta.json();
+    } else {
+        throw new Error("Fallo en la carga de voluntarios");
+    }
+}
+
+// Asignar voluntario (Endpoint asumido, debes asegurarte de que exista en tu Spring Boot)
+async function asignarVoluntarioTienda(idTienda, idVoluntario, idCampana) {
+    const token = sessionStorage.getItem('token');
+    const respuesta = await fetch(`${API_BASE}/api/logistica/asignar-voluntario`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            idTienda: parseInt(idTienda),
+            idVoluntario: parseInt(idVoluntario),
+            idCampana: parseInt(idCampana)
+        })
+    });
+
+    if (respuesta.ok) {
+        return await respuesta.text(); // A veces estos endpoints devuelven texto y no JSON
+    } else {
+        const mensajeError = await respuesta.text();
+        throw new Error(mensajeError);
     }
 }
