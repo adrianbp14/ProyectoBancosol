@@ -18,6 +18,6 @@ public class Cadena {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "codigo", nullable = false, length = 10)
+    @Column(name = "codigo", nullable = false, length = 10, unique = true)
     private String codigo;
 }
