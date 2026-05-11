@@ -23,7 +23,7 @@
     flex-direction: column;
     min-height: 300px;
     justify-content: space-between;
-    border-top: 6px solid #4f46e5;
+    border-top: 6px solid #004b87;
     background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%); 
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
@@ -49,7 +49,7 @@
 
 /* Efecto hover con tu color morado/azul solicitado */
 .nav-links a:hover {
-    background-color: #4f46e5;
+    background-color: #004b87;
     color: white;
     transform: translateX(5px); /* Pequeño empujón a la derecha */
 }
@@ -77,7 +77,7 @@
     font-weight: bold;
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     /* Detalle de color exacto solicitado en el borde inferior */
-    border-bottom: 4px solid #4f46e5; 
+    border-bottom: 4px solid #004b87; 
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -88,7 +88,7 @@
 }
 
 #btn-cierre-sesion {
-    background-color: #4f46e5; /* Tu azul corporativo */
+    background-color: #004b87; /* Tu azul corporativo */
     color: white;
     margin-top: 20px; /* Lo separa de los enlaces de arriba */
     padding: 12px 20px;
