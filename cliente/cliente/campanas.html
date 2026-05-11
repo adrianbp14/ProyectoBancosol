@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generación de Campaña - BancoSol</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/logistica.css">
+  <script src="js/auth-common.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/campanas.js" defer></script>
+</head>
+
+<body class="admin-body">
+  
+  <header class="banner-superior" style="background-color: var(--primary-color);">
+    <h2>Generación de Campaña</h2>
+    <p style="color: #e0e7ff; margin-top: 10px; font-size: 1.1rem;">Acceso sólo para administradores</p>
+  </header>
+
+  <main class="container" style="margin-top: 30px;">
+    <div class="card">
+        <section class="form-group">
+            <label for="selectCampana"><strong>Seleccionar Tipo de Campaña:</strong></label>
+            <select id="selectCampana" style="width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="PRIMAVERA">PRIMAVERA</option>
+                <option value="GRAN_RECOGIDA">GRAN RECOGIDA</option>
+            </select>
+        </section>
+
+        <section class="form-group" style="margin-top: 30px;">
+            <label><strong>Cadenas de Supermercados:</strong></label>
+            <div id="contenedor-cadenas" style="border: 1px solid #ddd; padding: 15px; margin-top: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
+                </div>
+        </section>
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button class="btn-action" onclick="abrirModalNuevaCadena()">Añadir Nueva Cadena</button>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
+            <button class="btn-nav" style="color: #555; border-color: #ddd;" onclick="location.href='admin.html'">Cancelar</button>
+            <button class="btn-action" style="background-color: var(--success);" onclick="procesarGeneracionCampana()">Generar Campaña</button>
+        </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; margin-top: 50px; color: #6b7280; font-size: 0.9rem;">
+    <p>&copy; 2026 Mi Aplicación. Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+
+</html>
