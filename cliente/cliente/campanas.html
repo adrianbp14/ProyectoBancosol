@@ -35,8 +35,10 @@
                 </div>
         </section>
 
-        <div style="margin-top: 20px; display: flex; gap: 10px;">
-            <button class="btn-action" onclick="abrirModalNuevaCadena()">Añadir Nueva Cadena</button>
+        <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
+            <input type="text" id="nuevoNombreCadena" placeholder="Nombre de cadena (ej: EROSKI)" 
+                   style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex-grow: 1;">
+            <button class="btn-action" onclick="añadirCadenaDesdeInput()">Añadir Nueva Cadena</button>
         </div>
 
         <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
