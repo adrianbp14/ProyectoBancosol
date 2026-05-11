@@ -28,12 +28,22 @@ function renderizarCadenas(cadenas) {
 
     cadenas.forEach(cadena => {
         const div = document.createElement('div');
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+        div.style.alignItems = "center";
         div.style.marginBottom = "10px";
+        div.style.padding = "5px";
+        div.style.borderBottom = "1px solid #eee";
+        
         div.innerHTML = `
             <label>
                 <input type="checkbox" value="${cadena.codigo}" name="cadena" checked> 
                 ${cadena.nombre} (${cadena.codigo})
             </label>
+            <button onclick="eliminarCadena(${cadena.idCadena})" 
+                    style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.8rem;">
+                Eliminar
+            </button>
         `;
         contenedor.appendChild(div);
     });
@@ -63,6 +73,24 @@ async function abrirModalNuevaCadena() {
         }
     } catch (error) {
         console.error(error);
+    }
+}
+
+async function eliminarCadena(id) {
+    if (!confirm("¿Seguro que quieres eliminar esta cadena de la base de datos?")) return;
+
+    try {
+        const respuesta = await fetch(`http://localhost:8080/api/cadenas/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (respuesta.ok) {
+            inicializarPagina();
+        } else {
+            alert("No se ha podido eliminar la cadena.");
+        }
+    } catch (error) {
+        console.error("Error al borrar:", error);
     }
 }
 
