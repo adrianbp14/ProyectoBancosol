@@ -55,9 +55,14 @@ function renderizarCadenas(cadenas) {
     });
 }
 
-async function abrirModalNuevaCadena() {
-    const nombre = prompt("Nombre de la nueva cadena:");
-    if (!nombre || nombre.trim() === "") return;
+async function añadirCadenaDesdeInput() {
+    const input = document.getElementById('nuevoNombreCadena');
+    const nombre = input.value;
+
+    if (!nombre || nombre.trim() === "") {
+        alert("Por favor, escribe un nombre para la cadena.");
+        return;
+    }
 
     const nombreUpper = nombre.toUpperCase();
     const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
@@ -75,10 +80,14 @@ async function abrirModalNuevaCadena() {
         });
 
         if (respuesta.ok) {
-            inicializarPagina();
+            input.value = ''; 
+            inicializarPagina(); 
+        } else {
+            alert("Error al guardar en el servidor. Asegúrate de que el Backend está corriendo.");
         }
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
+        alert("No se pudo conectar con el servidor.");
     }
 }
 
