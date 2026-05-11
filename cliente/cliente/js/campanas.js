@@ -40,10 +40,16 @@ function renderizarCadenas(cadenas) {
                 <input type="checkbox" value="${cadena.codigo}" name="cadena" checked> 
                 ${cadena.nombre} (${cadena.codigo})
             </label>
-            <button onclick="eliminarCadena(${cadena.idCadena})" 
-                    style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.8rem;">
-                Eliminar
-            </button>
+            <div>
+                <button onclick="modificarCadena(${cadena.idCadena}, '${cadena.nombre}')" 
+                        style="background: none; border: none; color: #ffc107; cursor: pointer; font-size: 0.8rem; margin-right: 10px;">
+                    Editar
+                </button>
+                <button onclick="eliminarCadena(${cadena.idCadena})" 
+                        style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.8rem;">
+                    Eliminar
+                </button>
+            </div>
         `;
         contenedor.appendChild(div);
     });
@@ -66,6 +72,34 @@ async function abrirModalNuevaCadena() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nuevaCadena)
+        });
+
+        if (respuesta.ok) {
+            inicializarPagina();
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function modificarCadena(id, nombreActual) {
+    const nuevoNombre = prompt("Nuevo nombre para la cadena:", nombreActual);
+    if (!nuevoNombre || nuevoNombre.trim() === "" || nuevoNombre === nombreActual) return;
+
+    const nombreUpper = nuevoNombre.toUpperCase();
+    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+
+    const datosActualizados = {
+        idCadena: id,
+        nombre: nombreUpper,
+        codigo: codigo
+    };
+
+    try {
+        const respuesta = await fetch('http://localhost:8080/api/cadenas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosActualizados)
         });
 
         if (respuesta.ok) {
