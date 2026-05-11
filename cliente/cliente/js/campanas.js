@@ -9,16 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function inicializarPagina() {
     try {
-        const cadenasIniciales = [
-            { nombre: 'LIDL', codigo: 'LIDL' },
-            { nombre: 'MERCADONA', codigo: 'MERC' },
-            { nombre: 'CARREFOUR', codigo: 'CARR' },
-            { nombre: 'DIA', codigo: 'DIA' },
-            { nombre: 'EL CORTE INGLES', codigo: 'ECI' },
-            { nombre: 'EL JAMON', codigo: 'ELJA' }
-        ];
-
-        renderizarCadenas(cadenasIniciales);
+        const respuesta = await fetch('http://localhost:8080/api/cadenas');
+        const cadenas = await respuesta.json();
+        renderizarCadenas(cadenas);
     } catch (error) {
         console.error(error);
     }
@@ -27,6 +20,11 @@ async function inicializarPagina() {
 function renderizarCadenas(cadenas) {
     const contenedor = document.getElementById('contenedor-cadenas');
     contenedor.innerHTML = '';
+
+    if (cadenas.length === 0) {
+        contenedor.innerHTML = '<p>No hay cadenas registradas.</p>';
+        return;
+    }
 
     cadenas.forEach(cadena => {
         const div = document.createElement('div');
@@ -41,23 +39,30 @@ function renderizarCadenas(cadenas) {
     });
 }
 
-function abrirModalNuevaCadena() {
+async function abrirModalNuevaCadena() {
     const nombre = prompt("Nombre de la nueva cadena:");
-    
-    if (nombre && nombre.trim() !== "") {
-        const nombreUpper = nombre.toUpperCase();
-        const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
-        
-        const contenedor = document.getElementById('contenedor-cadenas');
-        const div = document.createElement('div');
-        div.style.marginBottom = "10px";
-        div.innerHTML = `
-            <label>
-                <input type="checkbox" value="${codigo}" name="cadena" checked> 
-                ${nombreUpper} (${codigo})
-            </label>
-        `;
-        contenedor.appendChild(div);
+    if (!nombre || nombre.trim() === "") return;
+
+    const nombreUpper = nombre.toUpperCase();
+    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+
+    const nuevaCadena = {
+        nombre: nombreUpper,
+        codigo: codigo
+    };
+
+    try {
+        const respuesta = await fetch('http://localhost:8080/api/cadenas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevaCadena)
+        });
+
+        if (respuesta.ok) {
+            inicializarPagina();
+        }
+    } catch (error) {
+        console.error(error);
     }
 }
 
@@ -73,14 +78,21 @@ async function procesarGeneracionCampana() {
 
     const datosCampana = {
         nombre: nombreCampana,
-        cadenas: cadenasSeleccionadas,
-        fechaCreacion: new Date().toISOString()
+        descripcion: "Cadenas participantes: " + cadenasSeleccionadas.join(", ")
     };
 
     try {
-        alert(`Campaña ${nombreCampana} preparada con ${cadenasSeleccionadas.length} cadenas.`);
-        console.log(datosCampana);
+        const respuesta = await fetch('http://localhost:8080/api/campanas', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosCampana)
+        });
+
+        if (respuesta.ok) {
+            alert("Campaña generada y guardada con éxito.");
+            window.location.href = 'admin.html';
+        }
     } catch (error) {
-        alert("Error en la conexión con el servidor.");
+        alert("Error al conectar con el servidor.");
     }
 }
