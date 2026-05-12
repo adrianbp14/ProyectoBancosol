@@ -149,6 +149,8 @@ async function procesarGeneracionCampana() {
 
     const datosCampana = {
         nombre: nombreCampana,
+        tipo: nombreCampana, 
+        anyo: 2026, 
         descripcion: "Cadenas participantes: " + cadenasSeleccionadas.join(", ")
     };
 
@@ -160,10 +162,13 @@ async function procesarGeneracionCampana() {
         });
 
         if (respuesta.ok) {
-            alert("Campaña generada y guardada con éxito.");
+            alert("Campaña generada y guardada con éxito en Supabase.");
             window.location.href = 'admin.html';
+        } else {
+            alert("Error al conectar con el servidor.");
         }
     } catch (error) {
-        alert("Error al conectar con el servidor.");
+        console.error(error);
+        alert("Error crítico en la conexión.");
     }
 }
