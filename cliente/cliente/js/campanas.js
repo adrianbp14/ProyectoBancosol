@@ -7,13 +7,43 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarPagina();
 });
 
+function obtenerCabeceras() {
+    const token = sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token, 
+        'token': token 
+    };
+}
+
 async function inicializarPagina() {
+    const contenedor = document.getElementById('contenedor-cadenas');
+    contenedor.innerHTML = '<p style="color: #666;">Conectando con el servidor...</p>';
+
     try {
-        const respuesta = await fetch('http://localhost:8080/api/cadenas');
+        const respuesta = await fetch('http://localhost:8080/api/cadenas', {
+            method: 'GET',
+            headers: obtenerCabeceras() 
+        });
+
+        if (!respuesta.ok) {
+            const errorTexto = await respuesta.text();
+            contenedor.innerHTML = `<p style="color: red;"><strong>Error del servidor Java (${respuesta.status}):</strong> ${errorTexto}</p>`;
+            return;
+        }
+
         const cadenas = await respuesta.json();
+
+        if (!Array.isArray(cadenas)) {
+            contenedor.innerHTML = `<p style="color: red;"><strong>Error:</strong> Java no ha devuelto una lista.</p>`;
+            return;
+        }
+
         renderizarCadenas(cadenas);
+
     } catch (error) {
         console.error(error);
+        contenedor.innerHTML = `<p style="color: red;"><strong>Error de conexión:</strong> El servidor Spring Boot está apagado.</p>`;
     }
 }
 
@@ -22,7 +52,7 @@ function renderizarCadenas(cadenas) {
     contenedor.innerHTML = '';
 
     if (cadenas.length === 0) {
-        contenedor.innerHTML = '<p>No hay cadenas registradas.</p>';
+        contenedor.innerHTML = '<p>No hay cadenas registradas en la base de datos.</p>';
         return;
     }
 
@@ -37,8 +67,8 @@ function renderizarCadenas(cadenas) {
         
         div.innerHTML = `
             <label>
-                <input type="checkbox" value="${cadena.codigo}" name="cadena" checked> 
-                ${cadena.nombre} (${cadena.codigo})
+                <input type="checkbox" value="${cadena.codigo_corto}" name="cadena" checked> 
+                ${cadena.nombre} (${cadena.codigo_corto})
             </label>
             <div>
                 <button onclick="modificarCadena(${cadena.idCadena}, '${cadena.nombre}')" 
@@ -65,17 +95,17 @@ async function añadirCadenaDesdeInput() {
     }
 
     const nombreUpper = nombre.toUpperCase();
-    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
 
     const nuevaCadena = {
         nombre: nombreUpper,
-        codigo: codigo
+        codigo_corto: codigoCorto
     };
 
     try {
         const respuesta = await fetch('http://localhost:8080/api/cadenas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(nuevaCadena)
         });
 
@@ -83,7 +113,7 @@ async function añadirCadenaDesdeInput() {
             input.value = ''; 
             inicializarPagina(); 
         } else {
-            alert("Error al guardar en el servidor. Asegúrate de que el Backend está corriendo.");
+            alert("Error al guardar en el servidor. (Código " + respuesta.status + ")");
         }
     } catch (error) {
         console.error("Error:", error);
@@ -96,18 +126,18 @@ async function modificarCadena(id, nombreActual) {
     if (!nuevoNombre || nuevoNombre.trim() === "" || nuevoNombre === nombreActual) return;
 
     const nombreUpper = nuevoNombre.toUpperCase();
-    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
 
     const datosActualizados = {
         idCadena: id,
         nombre: nombreUpper,
-        codigo: codigo
+        codigo_corto: codigoCorto
     };
 
     try {
         const respuesta = await fetch('http://localhost:8080/api/cadenas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(datosActualizados)
         });
 
@@ -124,7 +154,8 @@ async function eliminarCadena(id) {
 
     try {
         const respuesta = await fetch(`http://localhost:8080/api/cadenas/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: obtenerCabeceras()
         });
 
         if (respuesta.ok) {
@@ -149,21 +180,26 @@ async function procesarGeneracionCampana() {
 
     const datosCampana = {
         nombre: nombreCampana,
+        tipo_campana: nombreCampana, 
+        anio: 2026,                  
         descripcion: "Cadenas participantes: " + cadenasSeleccionadas.join(", ")
     };
 
     try {
         const respuesta = await fetch('http://localhost:8080/api/campanas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(datosCampana)
         });
 
         if (respuesta.ok) {
-            alert("Campaña generada y guardada con éxito.");
+            alert("Campaña generada y guardada con éxito en Supabase.");
             window.location.href = 'admin.html';
+        } else {
+            alert("Error al conectar con el servidor. (Código " + respuesta.status + ")");
         }
     } catch (error) {
-        alert("Error al conectar con el servidor.");
+        console.error(error);
+        alert("Error crítico en la conexión.");
     }
 }

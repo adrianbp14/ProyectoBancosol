@@ -1,5 +1,7 @@
 package es.uma.taw.bancosol.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +20,7 @@ public class Cadena {
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "codigo", nullable = false, length = 10, unique = true)
+    @Column(name = "codigo_corto", nullable = false, length = 10, unique = true)
+    @JsonProperty("codigo_corto")
     private String codigo;
 }
