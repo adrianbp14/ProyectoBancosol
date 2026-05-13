@@ -111,10 +111,13 @@ document.getElementById('btn-confirmar-asignacion').onclick = async () => {
     const idTienda = document.getElementById('id-tienda-modal').value;
     const idCoord = document.getElementById('select-coordinador').value;
     
-    // Por ahora, usamos el ID 1 (Primavera) o 2 (Gran Recogida) 
-    // hasta que tengamos un selector de campaña en el HTML
-    const idCampana = 1; 
+    const idCampana = document.getElementById('select-campana').value;
     
+    if(!idCampana) {
+        alert("Por favor, selecciona una campaña antes de asignar.");
+        return;
+    }
+
     if(!idCoord) {
         alert("Por favor, selecciona un coordinador.");
         return;
