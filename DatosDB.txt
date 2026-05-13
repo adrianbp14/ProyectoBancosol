@@ -36,7 +36,7 @@ INSERT INTO "public"."usuario" (username, password, nombre_completo, email, id_r
 ('maria_tienda', '1234', 'María López Pérez', 'm.lopez@mercadona.es', 5, true, '2026-05-12 07:00:00');
 
 -- 5. CADENAS
-INSERT INTO "public"."cadena" ("id_cadena", "nombre", "codigo_corto") VALUES 
+INSERT INTO "public"."cadena" ("id_cadena", "nombre", "codigo") VALUES 
 (1, 'Mercadona', 'MERC'), (2, 'Carrefour', 'CARR'), (3, 'Lidl', 'LIDL'), (4, 'DIA', 'DIA'), (5, 'Eroski', 'EROS')
 ON CONFLICT (id_cadena) DO NOTHING;
 
