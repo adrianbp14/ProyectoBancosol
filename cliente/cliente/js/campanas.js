@@ -149,8 +149,8 @@ async function procesarGeneracionCampana() {
 
     const datosCampana = {
         nombre: nombreCampana,
-        tipo: nombreCampana, 
-        anyo: 2026, 
+        tipo_campana: nombreCampana, 
+        anio: 2026,                 
         descripcion: "Cadenas participantes: " + cadenasSeleccionadas.join(", ")
     };
 
