@@ -1,0 +1,359 @@
+-- 1. ROL
+INSERT INTO "public"."rol" ("id_rol", "nombre_rol") VALUES 
+(1, 'Administrador'), (2, 'Coordinador'), (3, 'Capitan'), (4, 'Responsable de Entidad'), (5, 'Responsable de Tienda')
+ON CONFLICT (id_rol) DO NOTHING;
+
+-- 2. GEOGRAFÍA (Provincia, Zona, Localidad)
+ALTER SEQUENCE "public"."provincia_id_provincia_seq" RESTART WITH 1;
+INSERT INTO "public"."provincia" ("nombre") VALUES ('Málaga'), ('Granada'), ('Sevilla') ON CONFLICT DO NOTHING;
+
+ALTER TABLE "public"."zona_geografica" ALTER COLUMN id_zona RESTART WITH 1;
+INSERT INTO "public"."zona_geografica" ("nombre") VALUES ('Málaga Capital y Centro'), ('Costa del Sol Occidental'), ('Axarquía') ON CONFLICT DO NOTHING;
+
+ALTER SEQUENCE "public"."localidad_id_localidad_seq" RESTART WITH 1;
+INSERT INTO "public"."localidad" ("id_localidad", "nombre", "id_provincia", "codigo_postal", "id_zona") VALUES 
+(1, 'Fuengirola', 1, '29640', 2),
+(2, 'Málaga', 1, '29001', 1),
+(3, 'Almáchar', 1, '29718', 3),
+(4, 'Marbella', 1, '29600', 2),
+(5, 'Ardales', 1, '29550', 1)
+ON CONFLICT (id_localidad) DO NOTHING;
+
+-- 3. DISTRITOS
+ALTER SEQUENCE "public"."distrito_id_distrito_seq" RESTART WITH 1;
+INSERT INTO "public"."distrito" ("id_distrito", "nombre", "id_localidad") VALUES 
+(1, 'Distrito Teatinos-Universidad', 2),
+(2, 'Distrito Centro Málaga', 2)
+ON CONFLICT (id_distrito) DO NOTHING;
+
+-- 4. USUARIOS (Ahora que existen los roles)
+ALTER TABLE "public"."usuario" ALTER COLUMN id_usuario RESTART WITH 1;
+INSERT INTO "public"."usuario" (username, password, nombre_completo, email, id_rol, activo, ultimo_acceso) VALUES 
+('admin_central', '1234', 'Admin General Bancosol', 'admin@bancosol.es', 1, true, '2026-05-12 08:30:00'),
+('amador_coord', '1234', 'Amador Sierra González', 'amador@uma.es', 2, true, '2026-05-12 09:15:00'),
+('tomas_cap', '1234', 'Tomás Soler Gordo', 'tomas@uma.es', 3, true, '2026-05-11 18:45:00'),
+('alberto_entidad', '1234', 'Alberto García Responde', 'alberto.entidad@ejemplo.com', 4, true, '2026-05-10 12:00:00'),
+('maria_tienda', '1234', 'María López Pérez', 'm.lopez@mercadona.es', 5, true, '2026-05-12 07:00:00');
+
+-- 5. CADENAS
+INSERT INTO "public"."cadena" ("id_cadena", "nombre", "codigo_corto") VALUES 
+(1, 'Mercadona', 'MERC'), (2, 'Carrefour', 'CARR'), (3, 'Lidl', 'LIDL'), (4, 'DIA', 'DIA'), (5, 'Eroski', 'EROS')
+ON CONFLICT (id_cadena) DO NOTHING;
+
+-- 6. TIENDAS (Ahora que ya existen usuarios, localidades, distritos y cadenas)
+INSERT INTO "public"."tienda" ("id_tienda", "id_cadena", "id_linea", "resena_nombre", "domicilio", "codigo_postal", "id_localidad", "clasificacion", "num_lineas_caja", "observaciones_acceso", "id_distrito", "latitud", "longitud", "id_usuario") VALUES 
+(1, 1, 1, 'Tienda Central Fuengirola', 'Calle Jacinto Benavente, 5', '29640', 1, 'A', 5, 'Acceso por planta baja, parking amplio.', 1, 36.5417, -4.6231, 1),
+(2, 1, 1, 'Bancosol Málaga Centro', 'Calle Larios, 1', '29005', 2, 'A+', 3, 'Zona peatonal, carga en horario restringido.', 2, 36.7202, -4.4208, 1),
+(3, 1, 1, 'Bancosol El Corte Inglés', 'Avenida de Andalucía, 4', '29007', 2, 'B', 10, 'Acceso por muelle de carga lateral.', 2, 36.7175, -4.4295, 1),
+(4, 1, 1, 'Bancosol Huelin', 'Calle Princesa, 12', '29002', 2, 'C', 4, 'Cerca de la parada de metro Princesa.', 1, 36.705, -4.437, 1),
+(5, 1, 1, 'Bancosol Almáchar', 'Calle Almería, 2', '29718', 3, 'B', 2, 'Entrada principal frente a la plaza.', 1, 36.8087, -4.2161, 1);
+
+-- 1. Primero añadimos 4 usuarios más con rol de Coordinador (ID 2) 
+-- para poder tener 5 coordinadores vinculados a usuarios distintos.
+INSERT INTO "public"."usuario" (username, password, nombre_completo, email, id_rol, activo) VALUES 
+('carlos_coord', '1234', 'Carlos Ruiz Zafón', 'carlos@ejemplo.com', 2, true),
+('elena_coord', '1234', 'Elena Blanco', 'elena@ejemplo.com', 2, true),
+('paco_coord', '1234', 'Francisco Ortiz', 'paco@ejemplo.com', 2, true),
+('ana_coord', '1234', 'Ana María Matute', 'ana@ejemplo.com', 2, true)
+ON CONFLICT (username) DO NOTHING;
+
+-- 2. Rellenamos la tabla Coordinador (5 filas)
+-- Reiniciamos la secuencia para que empiecen desde el ID 1
+ALTER SEQUENCE "public"."coordinador_id_coordinador_seq" RESTART WITH 1;
+
+INSERT INTO "public"."coordinador" 
+(entidad_pertenencia, telefono, email, id_localidad, id_usuario, id_distrito, apellidos, nombre) 
+VALUES 
+(
+    'Universidad de Málaga', 
+    '600111222', 
+    'amador@uma.es', 
+    2, -- Málaga
+    2, -- id_usuario de amador_coord (ya creado anteriormente)
+    1, -- Distrito Teatinos
+    'Sierra González', 
+    'Amador'
+),
+(
+    'Banco de Alimentos', 
+    '611222333', 
+    'carlos@ejemplo.com', 
+    2, -- Málaga
+    6, -- Nuevo usuario carlos_coord
+    2, -- Distrito Centro
+    'Ruiz Zafón', 
+    'Carlos'
+),
+(
+    'Ayuntamiento de Fuengirola', 
+    '622333444', 
+    'elena@ejemplo.com', 
+    1, -- Fuengirola
+    7, -- Nuevo usuario elena_coord
+    NULL, 
+    'Blanco', 
+    'Elena'
+),
+(
+    'Cruz Roja Málaga', 
+    '633444555', 
+    'paco@ejemplo.com', 
+    2, -- Málaga
+    8, -- Nuevo usuario paco_coord
+    1, -- Distrito Teatinos
+    'Ortiz', 
+    'Francisco'
+),
+(
+    'Cáritas Diocesana', 
+    '644555666', 
+    'ana@ejemplo.com', 
+    3, -- Almáchar
+    9, -- Nuevo usuario ana_coord
+    NULL, 
+    'Matute', 
+    'Ana María'
+);
+
+-- 1. Añadimos 4 usuarios más con rol de Capitán (ID 3)
+INSERT INTO "public"."usuario" (username, password, nombre_completo, email, id_rol, activo) VALUES 
+('pablo_cap', '1234', 'Pablo Motos', 'pablo@ejemplo.com', 3, true),
+('lucia_cap', '1234', 'Lucía Sánchez', 'lucia@ejemplo.com', 3, true),
+('marcos_cap', '1234', 'Marcos Alonso', 'marcos@ejemplo.com', 3, true),
+('sergio_cap', '1234', 'Sergio Ramos', 'sergio@ejemplo.com', 3, true)
+ON CONFLICT (username) DO NOTHING;
+
+-- 2. Rellenamos la tabla Capitan (5 filas)
+-- Reiniciamos la secuencia para que empiecen desde el ID 1
+ALTER SEQUENCE "public"."capitan_id_capitan_seq" RESTART WITH 1;
+
+INSERT INTO "public"."capitan" 
+(nombre, telefono, email, id_localidad, id_usuario) 
+VALUES 
+(
+    'Tomás Soler Gordo', 
+    '611000111', 
+    'tomas@uma.es', 
+    2, -- Málaga
+    3  -- ID de usuario tomas_cap que ya existía
+),
+(
+    'Pablo Motos', 
+    '622000222', 
+    'pablo@ejemplo.com', 
+    1, -- Fuengirola
+    10 -- Nuevo usuario pablo_cap
+),
+(
+    'Lucía Sánchez', 
+    '633000333', 
+    'lucia@ejemplo.com', 
+    2, -- Málaga
+    11 -- Nuevo usuario lucia_cap
+),
+(
+    'Marcos Alonso', 
+    '644000444', 
+    'marcos@ejemplo.com', 
+    3, -- Almáchar
+    12 -- Nuevo usuario marcos_cap
+),
+(
+    'Sergio Ramos', 
+    '655000555', 
+    'sergio@ejemplo.com', 
+    2, -- Málaga
+    13 -- Nuevo usuario sergio_cap
+);
+
+-- 1. Reiniciamos la secuencia de la tabla voluntario
+ALTER TABLE "public"."voluntario" ALTER COLUMN id_voluntario RESTART WITH 1;
+
+-- 2. Inserción de 5 voluntarios
+INSERT INTO "public"."voluntario" 
+(nombre, apellidos, dni, telefono, email, id_coordinador_responsable) 
+VALUES 
+(
+    'Alberto', 
+    'García Ruiz', 
+    '12345678A', 
+    '600111001', 
+    'alberto.garcia@email.com', 
+    1 -- Responsable: Amador Sierra
+),
+(
+    'Beatriz', 
+    'López Castro', 
+    '23456789B', 
+    '600222002', 
+    'b.lopez@email.com', 
+    2 -- Responsable: Carlos Ruiz
+),
+(
+    'Carlos', 
+    'Méndez Joya', 
+    '34567890C', 
+    '600333003', 
+    'carlos.mendez@email.com', 
+    1 -- Responsable: Amador Sierra
+),
+(
+    'Diana', 
+    'Sanz Orellana', 
+    '45678901D', 
+    '600444004', 
+    'diana.sanz@email.com', 
+    3 -- Responsable: Elena Blanco
+),
+(
+    'Eduardo', 
+    'Vila Real', 
+    '56789012E', 
+    '600555005', 
+    'edu.vila@email.com', 
+    4 -- Responsable: Francisco Ortiz
+);
+
+-- 1. Reiniciamos la secuencia de la tabla entidad_colaboradora
+ALTER SEQUENCE "public"."colaborador_id_colaborador_seq" RESTART WITH 1;
+
+-- 2. Inserción de 5 entidades colaboradoras
+INSERT INTO "public"."entidad_colaboradora" 
+(codigo_bancosol, nombre, vinculado_bancosol, domicilio, codigo_postal, id_localidad, observaciones, estado_validacion, id_coordinador) 
+VALUES 
+(
+    'ENT-001', 
+    'Universidad de Málaga (UMA)', 
+    true, 
+    'Campus de Teatinos, s/n', 
+    '29071', 
+    2, -- Málaga
+    'Aportan un gran número de voluntarios jóvenes para campañas de verano.', 
+    'Validado', 
+    1 -- Coordinador: Amador Sierra
+),
+(
+    'ENT-002', 
+    'Asociación de Vecinos Fuengirola', 
+    false, 
+    'Calle Mayor, 15', 
+    '29640', 
+    1, -- Fuengirola
+    'Colaboran principalmente en la zona de la Costa del Sol.', 
+    'Validado', 
+    3 -- Coordinadora: Elena Blanco
+),
+(
+    'ENT-003', 
+    'Colegio San Estanislao de Kostka', 
+    true, 
+    'Calle Juan Sebastián Elcano, 185', 
+    '29017', 
+    2, -- Málaga
+    'Participación activa de alumnos de bachillerato y padres.', 
+    'Validado', 
+    1 -- Coordinador: Amador Sierra
+),
+(
+    'ENT-004', 
+    'Peña Recreativa Almáchar', 
+    false, 
+    'Plaza de la Axarquía, 2', 
+    '29718', 
+    3, -- Almáchar
+    'Entidad local clave para la logística en pueblos pequeños.', 
+    'Pendiente', 
+    5 -- Coordinadora: Ana María Matute
+),
+(
+    'ENT-005', 
+    'Parroquia del Carmen', 
+    true, 
+    'Calle de la Iglesia, 1', 
+    '29002', 
+    2, -- Málaga
+    'Grupo consolidado de voluntarios senior.', 
+    'Validado', 
+    4 -- Coordinador: Francisco Ortiz
+);
+
+ALTER SEQUENCE "public"."tipo_campana_id_tipo_seq" RESTART WITH 1;
+
+INSERT INTO "public"."tipo_campana" ("nombre_tipo") VALUES 
+('Gran Recogida'), 
+('Campaña de Primavera'), 
+('Recogida Escolar'), 
+('Operación Kilo'), 
+('Campaña de Navidad');
+
+ALTER SEQUENCE "public"."campana_id_campana_seq" RESTART WITH 1;
+
+INSERT INTO "public"."campana" 
+("id_campana", "nombre", "anio", "fecha_inicio", "fecha_fin", "tipo_campana", "descripcion") 
+VALUES 
+(
+    1, 
+    'Gran Recogida de Alimentos 2026', 
+    2026, 
+    '2026-11-20', 
+    '2026-11-22', 
+    'Gran Recogida', 
+    'Campaña principal a nivel nacional en grandes superficies.'
+),
+(
+    2, 
+    'Campaña Primavera Málaga', 
+    2026, 
+    '2026-05-15', 
+    '2026-05-17', 
+    'Campaña de Primavera', 
+    'Recogida centrada en productos infantiles y de higiene.'
+),
+(
+    3, 
+    'Recogida Universitaria UMA', 
+    2026, 
+    '2026-03-10', 
+    '2026-03-12', 
+    'Recogida Escolar', 
+    'Campaña de recogida en facultades de la Universidad de Málaga.'
+),
+(
+    4, 
+    'Operación Kilo Barrios', 
+    2026, 
+    '2026-09-04', 
+    '2026-09-06', 
+    'Operación Kilo', 
+    'Recogida en supermercados de barrio y zonas residenciales.'
+),
+(
+    5, 
+    'Campaña Especial Navidad', 
+    2026, 
+    '2026-12-11', 
+    '2026-12-13', 
+    'Campaña de Navidad', 
+    'Campaña orientada a productos navideños y alimentos no perecederos.'
+);
+
+-- Ajustamos la secuencia para los próximos inserts automáticos
+SELECT setval('public.campana_id_campana_seq', 5);
+
+ALTER SEQUENCE "public"."contacto_colaborador_id_contacto_seq" RESTART WITH 1;
+
+INSERT INTO "public"."contacto_colaborador" 
+(id_colaborador, nombre_contacto, telefono, email, es_principal) 
+VALUES 
+(1, 'Responsable Voluntariado UMA', '952131000', 'voluntariado@uma.es', true),
+(2, 'Presidente AVV Fuengirola', '952460000', 'contacto@avvfuengirola.es', true),
+(5, 'Párroco D. Manuel', '952330011', 'parroquia.carmen@diocesismalaga.es', true);
+
+ALTER SEQUENCE "public"."incidencias_campana_id_incidencia_seq" RESTART WITH 1;
+
+INSERT INTO "public"."incidencias_campana" 
+(id_tienda, id_campana, id_usuario_reporta, descripcion, es_positiva) 
+VALUES 
+(1, 1, 3, 'Gran afluencia de gente, los voluntarios se portaron de diez.', true),
+(2, 1, 3, 'Faltaron bolsas de recogida durante la tarde del sábado.', false),
+(3, 2, 2, 'El responsable de tienda facilitó mucho la colocación del stand.', true);
