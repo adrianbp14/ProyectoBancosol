@@ -1,20 +1,20 @@
 package es.uma.taw.bancosol;
 
-import es.uma.taw.bancosol.entity.Colaborador;
 import es.uma.taw.bancosol.entity.ContactoColaborador;
-import es.uma.taw.bancosol.dao.ColaboradorRepository;
+import es.uma.taw.bancosol.dao.EntidadColaboradoraRepository;
+import es.uma.taw.bancosol.entity.EntidadColaboradora;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ColaboradorService {
+public class EntidadColaboradoraService {
 
     @Autowired
-    private ColaboradorRepository colaboradorRepository;
+    private EntidadColaboradoraRepository colaboradorRepository;
 
     @Transactional
-    public Colaborador guardarNuevoColaborador(Colaborador colaborador) {
+    public EntidadColaboradora guardarNuevoColaborador(EntidadColaboradora colaborador) {
 
         // 1. Aplicamos la regla de negocio
         colaborador.setEstadoValidacion("Pendiente");
@@ -32,14 +32,14 @@ public class ColaboradorService {
     }
 
     // Añade esto en tu ColaboradorService.java
-    public java.util.List<Colaborador> obtenerTodos() {
+    public java.util.List<EntidadColaboradora> obtenerTodos() {
         return colaboradorRepository.findAll();
     }
 
     // Añade esto en ColaboradorService.java
-    public Colaborador cambiarEstado(Long id, String nuevoEstado) {
+    public EntidadColaboradora cambiarEstado(Long id, String nuevoEstado) {
         // Buscamos al colaborador en la base de datos
-        Colaborador colab = colaboradorRepository.findById(id)
+        EntidadColaboradora colab = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
 
         // Le cambiamos el estado y guardamos
