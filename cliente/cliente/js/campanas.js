@@ -7,13 +7,43 @@ document.addEventListener("DOMContentLoaded", () => {
     inicializarPagina();
 });
 
+function obtenerCabeceras() {
+    const token = sessionStorage.getItem('token');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token, 
+        'token': token 
+    };
+}
+
 async function inicializarPagina() {
+    const contenedor = document.getElementById('contenedor-cadenas');
+    contenedor.innerHTML = '<p style="color: #666;">Conectando con el servidor...</p>';
+
     try {
-        const respuesta = await fetch('http://localhost:8080/api/cadenas');
+        const respuesta = await fetch('http://localhost:8080/api/cadenas', {
+            headers: obtenerCabeceras()
+        });
+
+        if (!respuesta.ok) {
+            const errorTexto = await respuesta.text();
+            contenedor.innerHTML = `<p style="color: red;"><strong>Error del servidor (${respuesta.status}):</strong> ${errorTexto}</p>`;
+            return;
+        }
+
         const cadenas = await respuesta.json();
+
+        // Comprobación vital: ¿De verdad es una lista?
+        if (!Array.isArray(cadenas)) {
+            contenedor.innerHTML = `<p style="color: red;"><strong>Error de formato:</strong> El servidor no ha devuelto una lista. Ha devuelto esto: ${JSON.stringify(cadenas)}</p>`;
+            return;
+        }
+
         renderizarCadenas(cadenas);
+
     } catch (error) {
         console.error(error);
+        contenedor.innerHTML = `<p style="color: red;"><strong>Error de conexión:</strong> ¿Está el backend (Spring Boot) encendido? Detalles: ${error.message}</p>`;
     }
 }
 
@@ -22,7 +52,7 @@ function renderizarCadenas(cadenas) {
     contenedor.innerHTML = '';
 
     if (cadenas.length === 0) {
-        contenedor.innerHTML = '<p>No hay cadenas registradas.</p>';
+        contenedor.innerHTML = '<p>No hay cadenas registradas en la base de datos.</p>';
         return;
     }
 
@@ -75,7 +105,7 @@ async function añadirCadenaDesdeInput() {
     try {
         const respuesta = await fetch('http://localhost:8080/api/cadenas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(nuevaCadena)
         });
 
@@ -83,11 +113,11 @@ async function añadirCadenaDesdeInput() {
             input.value = ''; 
             inicializarPagina(); 
         } else {
-            alert("Error al guardar en el servidor. Asegúrate de que el Backend está corriendo.");
+            alert(`Error al guardar: Código de servidor ${respuesta.status}`);
         }
     } catch (error) {
         console.error("Error:", error);
-        alert("No se pudo conectar con el servidor.");
+        alert("No se pudo conectar con el servidor al añadir.");
     }
 }
 
@@ -107,12 +137,14 @@ async function modificarCadena(id, nombreActual) {
     try {
         const respuesta = await fetch('http://localhost:8080/api/cadenas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(datosActualizados)
         });
 
         if (respuesta.ok) {
             inicializarPagina();
+        } else {
+            alert(`Error al modificar: Código de servidor ${respuesta.status}`);
         }
     } catch (error) {
         console.error(error);
@@ -124,13 +156,14 @@ async function eliminarCadena(id) {
 
     try {
         const respuesta = await fetch(`http://localhost:8080/api/cadenas/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: obtenerCabeceras()
         });
 
         if (respuesta.ok) {
             inicializarPagina();
         } else {
-            alert("No se ha podido eliminar la cadena.");
+            alert(`No se ha podido eliminar. Código de servidor: ${respuesta.status}`);
         }
     } catch (error) {
         console.error("Error al borrar:", error);
@@ -149,15 +182,15 @@ async function procesarGeneracionCampana() {
 
     const datosCampana = {
         nombre: nombreCampana,
-        tipo_campana: nombreCampana, 
-        anio: 2026,                 
+        tipoCampana: nombreCampana, // Ajustado para que coincida con Java
+        anio: 2026,                 // Ajustado para que coincida con Java
         descripcion: "Cadenas participantes: " + cadenasSeleccionadas.join(", ")
     };
 
     try {
         const respuesta = await fetch('http://localhost:8080/api/campanas', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: obtenerCabeceras(),
             body: JSON.stringify(datosCampana)
         });
 
@@ -165,7 +198,7 @@ async function procesarGeneracionCampana() {
             alert("Campaña generada y guardada con éxito en Supabase.");
             window.location.href = 'admin.html';
         } else {
-            alert("Error al conectar con el servidor.");
+            alert(`Error al guardar campaña: Código de servidor ${respuesta.status}`);
         }
     } catch (error) {
         console.error(error);
