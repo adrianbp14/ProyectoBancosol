@@ -24,8 +24,8 @@ public class Campana {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "anyo")
-    private Integer anyo;
+    @Column(name = "anio")
+    private Integer anio;
 
     @Column(name = "fecha_inicio")
     @JsonProperty("fecha_inicio")
@@ -35,6 +35,7 @@ public class Campana {
     @JsonProperty("fecha_fin")
     private LocalDate fechaFin;
 
-    @Column(name = "tipo")
-    private String tipo;
+    @Column(name = "tipo_campana")
+    @JsonProperty("tipo_campana")
+    private String tipoCampana;
 }
