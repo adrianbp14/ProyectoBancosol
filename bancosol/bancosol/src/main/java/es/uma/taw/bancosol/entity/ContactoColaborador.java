@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "contactos_colaborador")
+@Table(name = "contacto_colaborador")
 @Getter // Lombok: Genera todos los getters
 @Setter // Lombok: Genera todos los setters
 @NoArgsConstructor // Lombok: Genera el constructor vacío (public ContactoColaborador() {})
@@ -31,6 +31,6 @@ public class ContactoColaborador {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "colaborador_id")
     @JsonIgnore
-    private Colaborador colaborador;
+    private EntidadColaboradora colaborador;
 
 }
