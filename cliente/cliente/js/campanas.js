@@ -67,8 +67,8 @@ function renderizarCadenas(cadenas) {
         
         div.innerHTML = `
             <label>
-                <input type="checkbox" value="${cadena.codigo}" name="cadena" checked> 
-                ${cadena.nombre} (${cadena.codigo})
+                <input type="checkbox" value="${cadena.codigo_corto}" name="cadena" checked> 
+                ${cadena.nombre} (${cadena.codigo_corto})
             </label>
             <div>
                 <button onclick="modificarCadena(${cadena.idCadena}, '${cadena.nombre}')" 
@@ -95,11 +95,11 @@ async function añadirCadenaDesdeInput() {
     }
 
     const nombreUpper = nombre.toUpperCase();
-    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
 
     const nuevaCadena = {
         nombre: nombreUpper,
-        codigo: codigo
+        codigo_corto: codigoCorto
     };
 
     try {
@@ -126,12 +126,12 @@ async function modificarCadena(id, nombreActual) {
     if (!nuevoNombre || nuevoNombre.trim() === "" || nuevoNombre === nombreActual) return;
 
     const nombreUpper = nuevoNombre.toUpperCase();
-    const codigo = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
 
     const datosActualizados = {
         idCadena: id,
         nombre: nombreUpper,
-        codigo: codigo
+        codigo_corto: codigoCorto
     };
 
     try {
