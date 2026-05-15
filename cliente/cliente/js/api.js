@@ -8,6 +8,7 @@ const API_TIENDAS = `${API_BASE}/api/tiendas`;     // Tiendas para el mapa
 const API_LOGISTICA = `${API_BASE}/api/logistica/tiendas`; // Logística
 const API_COLABORADORES = `${API_BASE}/api/colaboradores`; // Colaboradores
 const API_VOLUNTARIOS = `${API_BASE}/api/voluntarios`; // Ruta para tu tabla 'voluntario'
+const API_CAMPANAS = `${API_BASE}/api/campanas`; // Ruta campañas
 
 // ==========================================
 // 🔐 AUTENTICACIÓN Y USUARIOS
@@ -152,9 +153,16 @@ async function obtenerTiendas() {
   }
 }
 
-async function obtenerTiendasLogistica() {
+// En api.js - Reemplaza tu función actual por esta:
+async function obtenerTiendasLogistica(idCampana = null) {
   const token = sessionStorage.getItem('token');
-  const respuesta = await fetch(API_LOGISTICA, { 
+  let url = API_LOGISTICA;
+
+  if (idCampana) {
+    url += `?campanaId=${idCampana}`;
+  }
+
+  const respuesta = await fetch(url, { 
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + token,
@@ -238,5 +246,23 @@ async function asignarVoluntarioTienda(idTienda, idVoluntario, idCampana) {
     } else {
         const mensajeError = await respuesta.text();
         throw new Error(mensajeError);
+    }
+}
+
+
+async function obtenerCampanas() {
+    const token = sessionStorage.getItem('token');
+    const respuesta = await fetch(API_CAMPANAS, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (respuesta.ok) {
+        return await respuesta.json();
+    } else {
+        throw new Error(`Error al obtener campañas: ${respuesta.status}`);
     }
 }
