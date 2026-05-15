@@ -10,17 +10,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     inicializarPagina();
+
+    const selectCampana = document.getElementById('select-campana');
+    if (selectCampana) {
+        selectCampana.addEventListener('change', (event) => {
+            const idCampanaSeleccionada = event.target.value;
+            actualizarTablaTiendas(idCampanaSeleccionada); 
+        });
+    }
+
 });
 
-// 1. Cargar y renderizar la tabla
-async function inicializarPagina() {
+// Recarga la tabla de tiendas según la campaña
+async function actualizarTablaTiendas(idCampana = null) {
+    const tbody = document.getElementById('tabla-tiendas');
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando tiendas...</td></tr>';
+    
     try {
-        const tiendas = await obtenerTiendasLogistica(); 
-        const tbody = document.getElementById('tabla-tiendas');
+        const tiendas = await obtenerTiendasLogistica(idCampana);
         tbody.innerHTML = ''; 
 
         if (tiendas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4">No hay tiendas registradas.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay tiendas en esta campaña.</td></tr>';
             return;
         }
 
@@ -42,56 +53,85 @@ async function inicializarPagina() {
                 </tr>
             `;
         });
+    } catch (error) {
+        console.error("Error al cargar tiendas filtradas:", error);
+        tbody.innerHTML = '<tr><td colspan="4" class="error" style="text-align:center;">Error al conectar con el servidor.</td></tr>';
+    }
+}
 
-        // 2. Cargamos los usuarios con "red de seguridad" para el error de CORS
+// 1. Cargar datos base al abrir la página
+async function inicializarPagina() {
+    // 1. CARGA DINÁMICA DE CAMPAÑAS (Nuevo bloque)
+    try {
+        const campanas = await obtenerCampanas();
+        const selectCampana = document.getElementById('select-campana');
+        
+        if (selectCampana) {
+            selectCampana.innerHTML = '<option value="">-- Selecciona una Campaña --</option>';
+            
+            campanas.forEach(c => {
+                const option = document.createElement('option');
+                // Usamos id_campana y nombre según tu esquema de base de datos
+                option.value = c.id_campana; 
+                option.textContent = c.nombre; 
+                selectCampana.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error("Error al cargar las campañas dinámicas:", error);
+        const selectCampana = document.getElementById('select-campana');
+        if (selectCampana) {
+            selectCampana.innerHTML = '<option value="">-- Error al cargar campañas --</option>';
+        }
+    }
+
+    // 2. Cargamos las tiendas (sin filtro inicial)
+    await actualizarTablaTiendas(); 
+
+    // 3. Cargamos los usuarios y voluntarios para las modales
+    try {
+        const usuarios = await cargarUsuarios();
+        
         try {
-            const usuarios = await cargarUsuarios();
-            // 3. Cargamos los voluntarios para la nueva modal
-            try {
-                const voluntarios = await obtenerListaVoluntarios();
-                const selectVoluntarios = document.getElementById('select-voluntario');
+            const voluntarios = await obtenerListaVoluntarios();
+            const selectVoluntarios = document.getElementById('select-voluntario');
+            
+            // Si la API de voluntarios devuelve un array directo o paginado
+            const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
 
-                // Si la API de colaboradores devuelve un array directo o paginado
-                const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
-
+            if (selectVoluntarios) {
+                selectVoluntarios.innerHTML = ''; // Limpiamos antes de cargar
                 listaVoluntarios.forEach(v => {
                     const option = document.createElement('option');
                     option.value = v.id_voluntario;
                     option.textContent = `${v.nombre} ${v.apellidos || ''}`;
                     selectVoluntarios.appendChild(option);
                 });
-            } catch (error) {
-                console.error("Error al cargar voluntarios:", error);
             }
-            console.log("¡ÉXITO! Datos recibidos del servidor:", usuarios); 
-            
-            const select = document.getElementById('select-coordinador');
+        } catch (error) {
+            console.error("Error al cargar voluntarios:", error);
+        }
+        
+        const select = document.getElementById('select-coordinador');
+        if (select) {
             select.innerHTML = '<option value="">-- Selecciona un perfil --</option>';
             
-            // Normalizamos la lista (por si viene dentro de un objeto 'users')
             const listaUsuarios = Array.isArray(usuarios) ? usuarios : (usuarios.users || []);
 
             listaUsuarios.forEach(u => {
                 const option = document.createElement('option');
-                // Usamos los nombres exactos de tu base de datos
                 option.value = u.id_usuario; 
                 option.textContent = u.nombre_completo; 
                 select.appendChild(option);
             });
-            
-            console.log("Desplegable actualizado con datos reales.");
-
-        } catch (error) {
-            // Si llegamos aquí, la consola nos dirá exactamente QUÉ falló
-            console.error("ERROR REAL AL CARGAR USUARIOS:", error);
-            const select = document.getElementById('select-coordinador');
-            select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
         }
 
     } catch (error) {
-        console.error("Error al cargar tiendas:", error);
-        document.getElementById('tabla-tiendas').innerHTML = 
-            '<tr><td colspan="4" class="error">Error al conectar con el servidor.</td></tr>';
+        console.error("ERROR REAL AL CARGAR USUARIOS:", error);
+        const select = document.getElementById('select-coordinador');
+        if (select) {
+            select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
+        }
     }
 }
 

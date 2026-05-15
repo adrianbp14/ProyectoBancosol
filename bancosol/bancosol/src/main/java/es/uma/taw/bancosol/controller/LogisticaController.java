@@ -50,8 +50,14 @@ public class LogisticaController {
     // ENDPOINTS EXISTENTES
     // ==========================================
     @GetMapping("/tiendas")
-    public List<Tienda> obtenerTodasLasTiendas() {
-        return tiendaRepository.findAll();
+    public List<Tienda> obtenerTiendas(@RequestParam(name = "campanaId", required = false) Integer campanaId) {
+        if (campanaId != null) {
+            // Buscamos solo las tiendas de esa campaña específica
+            return this.tiendaRepository.findByCampanaId(campanaId);
+        } else {
+            // Si no se selecciona campaña, devolvemos el listado completo
+            return this.tiendaRepository.findAll();
+        }
     }
 
     @PostMapping("/asignar")
