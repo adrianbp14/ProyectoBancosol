@@ -18,7 +18,7 @@
             
             <div class="filtros-fila-superior">
                 <input type="text" id="buscar-nombre" class="filtro-input" placeholder="Buscar por nombre o localidad..." onkeydown="comprobarEnter(event)">
-                
+
                 <select id="filtro-estado" class="filtro-select">
                     <option value="Todos">Todos los estados</option>
                     <option value="Pendiente">Pendiente</option>
@@ -27,8 +27,11 @@
                 </select>
             </div>
 
-            <button class="btn-buscar" onclick="aplicarFiltros()">Buscar</button>
-            
+            <div class="filtros-fila-botones">
+                <button class="btn-buscar" onclick="aplicarFiltros()">Buscar</button>
+                <button class="btn-nav" onclick="window.location.href='admin.html'">Volver al Inicio</button>
+            </div>
+
         </div>
 
         <table id="tabla-colaboradores">
@@ -46,10 +49,6 @@
             <tbody>
                 </tbody>
         </table>
-
-        <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
-            <a href="admin.html" class="btn-volver">← Volver al Panel</a>
-        </div>
 
     </div>
 
