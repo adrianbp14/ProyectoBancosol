@@ -94,11 +94,10 @@ async function añadirCadenaDesdeInput() {
         return;
     }
 
-    const nombreUpper = nombre.toUpperCase();
     const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
 
     const nuevaCadena = {
-        nombre: nombreUpper,
+        nombre: nombre,
         codigo_corto: codigoCorto
     };
 
@@ -125,12 +124,11 @@ async function modificarCadena(id, nombreActual) {
     const nuevoNombre = prompt("Nuevo nombre para la cadena:", nombreActual);
     if (!nuevoNombre || nuevoNombre.trim() === "" || nuevoNombre === nombreActual) return;
 
-    const nombreUpper = nuevoNombre.toUpperCase();
-    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nuevoNombre.toUpperCase.substring(0, 4).replace(/\s/g, '');
 
     const datosActualizados = {
         idCadena: id,
-        nombre: nombreUpper,
+        nombre: nuevoNombre,
         codigo_corto: codigoCorto
     };
 

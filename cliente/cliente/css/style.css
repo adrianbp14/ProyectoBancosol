@@ -1,4 +1,4 @@
-/* Variables de estilo: Sincronizadas con el estilo de Bancosol */
+/* Variables globales: Cambia estos colores y se actualizará toda tu web */
 :root {
     --primary-color: #004b87;      /* Azul oficial del proyecto */
     --primary-dark: #003865;
@@ -21,7 +21,7 @@ body {
     color: var(--text-main);
 }
 
-/* Tarjeta de Login: Diseño limpio y minimalista */
+/* Contenedor principal (Card)*/
 #login-form {
     background: var(--white);
     padding: 40px;
