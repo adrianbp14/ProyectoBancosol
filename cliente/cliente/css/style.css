@@ -308,3 +308,38 @@ body.admin-body {
     font-size: 2.2rem;
     font-weight: bold;
 }
+
+/* Nuevo estilo unificado para el botón de volver */
+.btn-nav {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;              
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    text-decoration: none;
+    margin: 0;
+    white-space: nowrap;      
+}
+
+.btn-nav:hover {
+    background-color: #f8fafc;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.btn-nav:active {
+    transform: translateY(0);
+}

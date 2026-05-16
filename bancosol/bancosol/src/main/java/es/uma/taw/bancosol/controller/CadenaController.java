@@ -27,6 +27,7 @@ public class CadenaController {
             Cadena nueva = cadenaRepository.save(cadena);
             return ResponseEntity.ok(nueva);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }

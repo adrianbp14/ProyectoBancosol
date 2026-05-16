@@ -71,6 +71,10 @@ function renderizarCadenas(cadenas) {
                 ${cadena.nombre} (${cadena.codigo_corto})
             </label>
             <div>
+                <button onclick="verDetallesCadena('${cadena.nombre}', '${cadena.codigo_corto}')" 
+                        style="background: none; border: none; color: #0ea5e9; cursor: pointer; font-size: 0.8rem; margin-right: 10px;">
+                    Ver info
+                </button>
                 <button onclick="modificarCadena(${cadena.idCadena}, '${cadena.nombre}')" 
                         style="background: none; border: none; color: #ffc107; cursor: pointer; font-size: 0.8rem; margin-right: 10px;">
                     Editar
@@ -94,7 +98,7 @@ async function añadirCadenaDesdeInput() {
         return;
     }
 
-    const codigoCorto = nombreUpper.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nombre.substring(0, 4).replace(/\s/g, '');
 
     const nuevaCadena = {
         nombre: nombre,
@@ -124,7 +128,7 @@ async function modificarCadena(id, nombreActual) {
     const nuevoNombre = prompt("Nuevo nombre para la cadena:", nombreActual);
     if (!nuevoNombre || nuevoNombre.trim() === "" || nuevoNombre === nombreActual) return;
 
-    const codigoCorto = nuevoNombre.toUpperCase.substring(0, 4).replace(/\s/g, '');
+    const codigoCorto = nuevoNombre.toUpperCase().substring(0, 4).replace(/\s/g, '');
 
     const datosActualizados = {
         idCadena: id,
