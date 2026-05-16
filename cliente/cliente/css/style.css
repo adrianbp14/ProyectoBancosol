@@ -152,19 +152,77 @@ button:hover {
 }
 
 
-.btn-volver {
-    padding: 10px 20px;
-    background-color: #6c757d;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background 0.3s;
+/* 1. Nueva fila para alinear ambos botones en horizontal y centrados */
+.filtros-fila-botones {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Separación entre los dos botones */
+    width: 100%;
 }
 
-.btn-volver:hover {
-    background-color: #5a6268;
+/* 2. El nuevo estilo unificado para ambos botones (sin lo innecesario) */
+.btn-nav, .btn-buscar {
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    white-space: nowrap;
+    box-sizing: border-box;
+    display: inline-flex;  /* Lo mantenemos solo aquí para que el icono '←' y el texto se alineen perfectamente */
+    align-items: center;
+    justify-content: center;
+    width: 180px;          /* Forzamos a que ambos midan EXACTAMENTE lo mismo de ancho */
+    margin: 0;
 }
+
+/* 3. Estilo visual específico del botón "Volver al Inicio" (Blanco) */
+.btn-nav {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-nav:hover {
+    background-color: #f8fafc;
+    color: var(--primary-color);  /* Corregido para usar tu variable global */
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Flecha decorativa exclusiva del botón volver */
+.btn-nav::before {
+    content: '←';
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* 4. Estilo visual específico del botón "Buscar" (Azul BancoSol) */
+.btn-buscar {
+    background-color: var(--primary-color);
+    color: #ffffff;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-buscar:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+/* Efecto común al hacer click en cualquiera de los dos */
+.btn-nav:active, .btn-buscar:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
 
 /* Estilos de la Tabla */
 table {
@@ -247,7 +305,7 @@ tr:hover {
 }
 
 /* Mantenemos las alturas iguales */
-.filtro-input, .filtro-select, .btn-buscar {
+.filtro-input, .filtro-select {
     height: 45px;
     padding: 0 15px;
     border: 1px solid #ccc;
@@ -266,21 +324,6 @@ tr:hover {
     min-width: 200px; /* Un tamaño fijo para que no se aplaste */
 }
 
-/* El botón ahora tiene su propio tamaño y diseño */
-.btn-buscar {
-    background-color: #004b87;
-    color: rgb(206, 206, 206);
-    cursor: pointer;
-    font-weight: bold;
-    border: none;
-    transition: background-color 0.2s;
-    width: 200px; /* Ancho fijo para que no sea gigante */
-    border-radius: 25px; /* Bordes un poco más redondeados para que parezca un botón principal */
-}
-
-.btn-buscar:hover {
-    background-color: #004b87;
-}
 
 body.admin-body {
     display: block;       /* Apaga el flex que centra el login verticalmente */
