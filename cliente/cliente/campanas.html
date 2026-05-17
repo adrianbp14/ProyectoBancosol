@@ -23,16 +23,16 @@
     <div class="card">
         <section class="form-group">
             <label for="selectCampana"><strong>Seleccionar Tipo de Campaña:</strong></label>
-            <select id="selectCampana" style="width: 100%; padding: 8px; margin-top: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <select id="selectCampana">
                 <option value="PRIMAVERA">PRIMAVERA</option>
                 <option value="GRAN_RECOGIDA">GRAN RECOGIDA</option>
             </select>
         </section>
 
-        <section class="form-group" style="margin-top: 30px;">
+        <section class="form-group">
             <label><strong>Cadenas de Supermercados:</strong></label>
-            <div id="contenedor-cadenas" style="border: 1px solid #ddd; padding: 15px; margin-top: 10px; border-radius: 4px; max-height: 200px; overflow-y: auto;">
-                </div>
+            <div id="contenedor-cadenas">
+            </div>
         </section>
 
         <div style="margin-top: 20px; display: flex; gap: 10px; align-items: center;">
@@ -42,8 +42,8 @@
         </div>
 
         <div style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
-          <button class="btn-nav" onclick="location.href='admin.html'">Cancelar</button>
-          <button class="btn-action" style="background-color: var(--success);" onclick="procesarGeneracionCampana()">Generar Campaña</button>
+            <button class="btn-nav" onclick="location.href='admin.html'">Cancelar</button>
+            <button class="btn-action" onclick="procesarGeneracionCampana()">Generar Campaña</button>
         </div>
     </div>
   </main>
