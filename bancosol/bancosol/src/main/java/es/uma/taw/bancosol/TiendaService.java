@@ -1,13 +1,7 @@
 package es.uma.taw.bancosol;
 
-import es.uma.taw.bancosol.dao.CampanaRepository;
-import es.uma.taw.bancosol.dao.TiendaCampanaCoordinadorRepository;
-import es.uma.taw.bancosol.entity.Campana;
-import es.uma.taw.bancosol.entity.Tienda;
-import es.uma.taw.bancosol.entity.TiendaCampanaCoordinador;
-import es.uma.taw.bancosol.entity.Usuario;
-import es.uma.taw.bancosol.dao.TiendaRepository;
-import es.uma.taw.bancosol.dao.UsuarioRepository;
+import es.uma.taw.bancosol.dao.*;
+import es.uma.taw.bancosol.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,25 +20,34 @@ public class TiendaService {
     @Autowired
     private TiendaCampanaCoordinadorRepository asignacionRepository;
 
+    @Autowired
+    private CoordinadorRepository coordinadorRepository;
 
-    public void asignarCoordinador(Integer idTienda, Long idUsuario, Integer idCampana) {
-        // 1. Buscamos las tres piezas en la base de datos
+
+    // Ojo: si en tu controlador pasabas un Long, pon Long idCoordinador. Si era Integer, pon Integer.
+    public void asignarCoordinador(Integer idTienda, Integer idCoordinador, Integer idCampana) {
+
+        // 1. Buscamos Tienda y Campaña
         Tienda tienda = tiendaRepository.findById(idTienda)
                 .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
-
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         Campana campana = campanaRepository.findById(idCampana)
                 .orElseThrow(() -> new RuntimeException("Campaña no encontrada"));
 
-        // 2. Creamos la "unión" en la tabla intermedia
+        // 2. BUSCAMOS EL COORDINADOR (Esto es lo que faltaba en tu código)
+        // (Asegúrate de tener @Autowired private CoordinadorRepository coordinadorRepository; arriba en el Service)
+        Coordinador coordinador = coordinadorRepository.findById(idCoordinador)
+                .orElseThrow(() -> new RuntimeException("Coordinador no encontrado"));
+
+        // 3. Creamos la "unión" en la tabla intermedia
         TiendaCampanaCoordinador nuevaAsignacion = new TiendaCampanaCoordinador();
         nuevaAsignacion.setTienda(tienda);
-        nuevaAsignacion.setUsuario(usuario);
         nuevaAsignacion.setCampana(campana);
 
-        // 3. Guardamos la asignación
+        // 4. GUARDAMOS LAS DOS COSAS PARA QUE SUPABASE NO PONGA NULL
+        nuevaAsignacion.setCoordinador(coordinador);
+        nuevaAsignacion.setUsuario(coordinador.getUsuario()); // Rellena también id_usuario si hace falta
+
+        // 5. Guardamos la asignación
         asignacionRepository.save(nuevaAsignacion);
     }
 }

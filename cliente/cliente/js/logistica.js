@@ -88,19 +88,21 @@ async function inicializarPagina() {
     // 2. Cargamos las tiendas (sin filtro inicial)
     await actualizarTablaTiendas(); 
 
-    // 3. Cargamos los usuarios y voluntarios para las modales
+    // 3. Cargamos los coordinadores y voluntarios para las modales
     try {
-        const usuarios = await cargarUsuarios();
+        // -- NUEVO: Llamamos a tu endpoint de coordinadores --
+        const resCoordinadores = await fetch('http://localhost:8080/api/coordinadores');
+        const listaCoordinadores = await resCoordinadores.json();
         
+        // -- VOLUNTARIOS (Se queda igual que lo tenías) --
         try {
             const voluntarios = await obtenerListaVoluntarios();
             const selectVoluntarios = document.getElementById('select-voluntario');
             
-            // Si la API de voluntarios devuelve un array directo o paginado
             const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
 
             if (selectVoluntarios) {
-                selectVoluntarios.innerHTML = ''; // Limpiamos antes de cargar
+                selectVoluntarios.innerHTML = ''; 
                 listaVoluntarios.forEach(v => {
                     const option = document.createElement('option');
                     option.value = v.id_voluntario;
@@ -112,22 +114,24 @@ async function inicializarPagina() {
             console.error("Error al cargar voluntarios:", error);
         }
         
+        // -- COORDINADORES: Rellenamos el desplegable --
         const select = document.getElementById('select-coordinador');
         if (select) {
-            select.innerHTML = '<option value="">-- Selecciona un perfil --</option>';
+            select.innerHTML = '<option value="">-- Selecciona un Coordinador --</option>';
             
-            const listaUsuarios = Array.isArray(usuarios) ? usuarios : (usuarios.users || []);
-
-            listaUsuarios.forEach(u => {
+            listaCoordinadores.forEach(c => {
+                console.log("Coordinador recibido de Java:", c);
                 const option = document.createElement('option');
-                option.value = u.id_usuario; 
-                option.textContent = u.nombre_completo; 
+                // Buscamos el ID real del coordinador
+                option.value = c.id || c.idCoordinador || c.id_coordinador; 
+                // Juntamos nombre y apellidos
+                option.textContent = `${c.nombre} ${c.apellidos || ''}`; 
                 select.appendChild(option);
             });
         }
 
     } catch (error) {
-        console.error("ERROR REAL AL CARGAR USUARIOS:", error);
+        console.error("ERROR AL CARGAR COORDINADORES:", error);
         const select = document.getElementById('select-coordinador');
         if (select) {
             select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
@@ -152,6 +156,7 @@ document.getElementById('btn-confirmar-asignacion').onclick = async () => {
     const idCoord = document.getElementById('select-coordinador').value;
     
     const idCampana = document.getElementById('select-campana').value;
+    console.log("Enviando -> Tienda:", idTienda, " | Coordinador:", idCoord, " | Campaña:", idCampana);
     
     if(!idCampana) {
         alert("Por favor, selecciona una campaña antes de asignar.");

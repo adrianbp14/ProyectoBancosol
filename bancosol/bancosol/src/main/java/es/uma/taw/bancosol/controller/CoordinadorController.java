@@ -1,6 +1,7 @@
 package es.uma.taw.bancosol.controller;
 
 import es.uma.taw.bancosol.dao.*;
+import es.uma.taw.bancosol.dto.DashboardCoordinadorDTO;
 import es.uma.taw.bancosol.dto.PersonalLogisticaDTO;
 import es.uma.taw.bancosol.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,8 @@ public class CoordinadorController {
     private RolRepository rolRepository;
     @Autowired
     private LocalidadRepository localidadRepository;
+    @Autowired
+    private TiendaRepository tiendaRepository;
 
     @PostMapping
     @Transactional
@@ -123,5 +127,57 @@ public class CoordinadorController {
             return ResponseEntity.badRequest().body("Error al borrar: " + e.getMessage());
         }
     }
+
+
+    // ==========================================
+    // CUADRO DE MANDO DEL COORDINADOR
+    // ==========================================
+    @GetMapping("/{id}/dashboard")
+    public ResponseEntity<DashboardCoordinadorDTO> obtenerDashboardCoordinador(@PathVariable Integer id) {
+        try {
+            // 1. Verificar que el coordinador existe
+            Coordinador coord = coordinadorRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Coordinador no encontrado"));
+
+            DashboardCoordinadorDTO dashboard = new DashboardCoordinadorDTO();
+
+            // -------------------------------------------------------------
+            // TODO: Aquí tendrás que llamar a los Repositorios de verdad.
+            // Por ejemplo: tiendaRepository.countByCoordinador(coord);
+            // -------------------------------------------------------------
+
+            // DATOS FALSOS PARA PROBAR LA CONEXIÓN FRONT-BACK:
+            dashboard.setTotalTiendasAsignadas(4);
+            dashboard.setKilosTotalesZona(1250.50);
+            dashboard.setTurnosIncompletos(2); // ¡Atención a esto!
+
+            return ResponseEntity.ok(dashboard);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{id}/tiendas")
+    public ResponseEntity<List<Tienda>> obtenerTiendasAsignadas(
+            @PathVariable Integer id,
+            @RequestParam(name = "rol", required = false) String rol,
+            @RequestParam(name = "idCampana", defaultValue = "1") Integer idCampana) {
+        try {
+            if (rol != null && rol.toUpperCase().contains("ADMIN")) {
+                // El admin ve todas las tiendas de la campaña actual
+                List<Tienda> tiendasCampana = tiendaRepository.findByCampanaId(idCampana);
+                return ResponseEntity.ok(tiendasCampana);
+            }
+
+            // Si es un coordinador normal, solo ve las suyas
+            List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorId(id);
+            return ResponseEntity.ok(tiendas);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
 
 }
