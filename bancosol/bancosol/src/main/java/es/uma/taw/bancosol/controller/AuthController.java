@@ -31,6 +31,7 @@ public class AuthController {
             Map<String, String> userDetails = new HashMap<>();
             userDetails.put("puesto", usuario.getRol().getNombre_rol());
             userDetails.put("nombre", usuario.getNombre_completo());
+            userDetails.put("id_usuario", String.valueOf(usuario.getId_usuario()));
 
             response.put("user", userDetails);
             response.put("success", true);
