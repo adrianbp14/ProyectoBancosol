@@ -1,11 +1,11 @@
 const ID_COORDINADOR_LOGUEADO = parseInt(sessionStorage.getItem('id_coordinador')) || 1;
-const ROL_USUARIO_LOGUEADO = sessionStorage.getItem('rol') || 'COORDINADOR'; 
+const ROL_USUARIO_LOGUEADO = sessionStorage.getItem('rol') || 'COORDINADOR';
 let tiendaSeleccionadaId = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     // Primero cargamos las campañas
     await cargarCampanasEnSelector();
-    
+
     const selectCampana = document.getElementById('select-campana-coord');
     // Cargamos tiendas con la campaña seleccionada por defecto
     if(selectCampana && selectCampana.value) {
@@ -26,15 +26,15 @@ async function cargarCampanasEnSelector() {
         const campanas = await obtenerCampanas();
         const select = document.getElementById('select-campana-coord');
         select.innerHTML = '';
-        
+
         if(campanas.length === 0) {
             select.innerHTML = '<option value="">No hay campañas disponibles</option>';
             return;
         }
-        
+
         campanas.forEach(c => {
             const option = document.createElement('option');
-            option.value = c.id_campana || c.idCampana || c.id; 
+            option.value = c.id_campana || c.idCampana || c.id;
             option.textContent = c.nombre;
             select.appendChild(option);
         });
@@ -84,7 +84,7 @@ async function cargarTiendasAsignadas(idCoordinador, idCampana) {
 }
 
 // Variable global para la campaña actual (Asegúrate de que el ID 1 exista en tu tabla Campana)
-const ID_CAMPANA_ACTUAL = 1; 
+const ID_CAMPANA_ACTUAL = 1;
 
 async function verTurnosTienda(idTienda, nombreTienda) {
     tiendaSeleccionadaId = idTienda;
@@ -114,7 +114,7 @@ async function verTurnosTienda(idTienda, nombreTienda) {
             const hayVoluntarios = turno.voluntarios.length > 0;
             const badgeClass = hayVoluntarios ? 'badge-success' : 'badge-danger';
             const badgeTexto = hayVoluntarios ? 'Con Voluntarios' : 'Vacante';
-            
+
             // Pintamos la lista de nombres de los voluntarios apuntados
             let htmlVoluntarios = '';
             if (hayVoluntarios) {
@@ -170,10 +170,10 @@ async function asignarColaboradorATurno(idTurnoBase) {
         const res = await fetch(`${API_BASE}/api/logistica/asignar-voluntario`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                idTienda: tiendaSeleccionadaId, 
+            body: JSON.stringify({
+                idTienda: tiendaSeleccionadaId,
                 idVoluntario: parseInt(idVoluntario),
-                idCampana: document.getElementById('select-campana-coord').value 
+                idCampana: document.getElementById('select-campana-coord').value
             })
         });
 
@@ -214,7 +214,7 @@ async function guardarColaborador() {
 
     try {
         const res = await fetch(`${API_BASE}/api/voluntarios`, {
-        method: 'POST',
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
