@@ -147,7 +147,8 @@ public class CoordinadorController {
                 return ResponseEntity.ok(tiendasCampana);
             }
 
-            List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorId(id);
+            // Ahora filtramos por Coordinador Y por Campaña
+            List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorAndCampana(id, idCampana);
             return ResponseEntity.ok(tiendas);
         } catch (Exception e) {
             e.printStackTrace();

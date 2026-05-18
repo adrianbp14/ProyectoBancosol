@@ -40,11 +40,19 @@ public class LogisticaController {
 
     @GetMapping("/tiendas")
     public List<Tienda> obtenerTiendas(@RequestParam(name = "campanaId", required = false) Integer campanaId) {
+        List<Tienda> lista;
+
         if (campanaId != null) {
-            return this.tiendaRepository.findByCampanaId(campanaId);
+            // Buscamos solo las tiendas de esa campaña específica
+            lista = this.tiendaRepository.findByCampanaId(campanaId);
         } else {
-            return this.tiendaRepository.findAll();
+            // Si no se selecciona campaña, devolvemos el listado completo
+            lista = this.tiendaRepository.findAll();
         }
+
+        lista.sort(java.util.Comparator.comparing(Tienda::getIdTienda));
+
+        return lista;
     }
 
     @PostMapping("/asignar")
@@ -70,6 +78,10 @@ public class LogisticaController {
 
             return ResponseEntity.ok().body(Map.of("message", "Asignación realizada con éxito"));
         } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("duplicate")) {
+                return ResponseEntity.status(409).body("duplicate: Esta tienda ya tiene coordinador.");
+            }
+
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error al asignar: " + e.getMessage());
         }
@@ -162,6 +174,27 @@ public class LogisticaController {
             return ResponseEntity.ok().body("Voluntario eliminado");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al eliminar: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // NUEVO ENDPOINT: ASIGNAR CAPITÁN
+    // ==========================================
+    @PostMapping("/asignar-capitan")
+    public ResponseEntity<?> asignarCapitan(@RequestBody Map<String, Object> datos) {
+        try {
+            if (datos.get("idTienda") == null || datos.get("idCapitan") == null) {
+                throw new RuntimeException("Faltan datos de la tienda o del capitán.");
+            }
+            Integer idTienda = Integer.parseInt(datos.get("idTienda").toString());
+            Integer idCapitan = Integer.parseInt(datos.get("idCapitan").toString());
+
+            tiendaService.asignarCapitan(idTienda, idCapitan);
+
+            return ResponseEntity.ok().body(Map.of("message", "Capitán asignado con éxito"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al asignar capitán: " + e.getMessage());
         }
     }
 
