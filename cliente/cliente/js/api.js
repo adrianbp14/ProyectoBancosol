@@ -388,3 +388,25 @@ async function borrarCapitanAPI(id) {
     });
     if (!res.ok) throw new Error("Error al borrar capitán");
 }
+
+async function asignarCapitanTienda(idTienda, idCapitan) {
+    const token = sessionStorage.getItem('token');
+    const respuesta = await fetch(`${API_BASE}/api/logistica/asignar-capitan`, { 
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            idTienda: parseInt(idTienda),
+            idCapitan: parseInt(idCapitan)
+        })
+    });
+
+    if (respuesta.ok) {
+        return await respuesta.json();
+    } else {
+        const mensajeError = await respuesta.text(); 
+        throw new Error(mensajeError); 
+    }
+}
