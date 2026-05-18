@@ -1,7 +1,7 @@
 const PAGINAS_POR_PUESTO = {
   'Administrador': 'admin.html',
   'Coordinador': 'coordinadorIndex.html',
-  'Capitan': 'capi-respEnt.html',
+  'Capitan': 'capitan.html',
   'Responsable de Entidad': 'capi-respEnt.html',
   'Responsable de Tienda': 'respTienda.html'
 };
@@ -45,12 +45,12 @@ document.querySelector('#login-form').addEventListener('submit', async function 
 
       let rolAsignar = datosInicioSesion.user.puesto.toUpperCase();
       if (rolAsignar.includes('ADMIN')) {
-          rolAsignar = 'ADMIN';
+        rolAsignar = 'ADMIN';
       }
       sessionStorage.setItem('rol', rolAsignar);
 
-    
-      let idCoord = datosInicioSesion.user.idCoordinador || datosInicioSesion.user.id || datosInicioSesion.user.id_usuario || 0;
+      // CAPTURA DIRECTA: Obtenemos el id_usuario que acabamos de inyectar en el mapa
+      let idCoord = datosInicioSesion.user.id_usuario || 0;
       sessionStorage.setItem('id_coordinador', idCoord);
 
       const targetPage = PAGINAS_POR_PUESTO[datosInicioSesion.user.puesto];
