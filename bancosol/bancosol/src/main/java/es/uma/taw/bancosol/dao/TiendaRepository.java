@@ -11,14 +11,12 @@ import java.util.List;
 @Repository
 public interface TiendaRepository extends JpaRepository<Tienda, Integer> {
 
-    // Tu consulta original que ya tenías (¡Intacta!)
     @Query(value = "SELECT t.* FROM tienda t " +
             "INNER JOIN cadena_campana cc ON t.id_cadena = cc.id_cadena " +
             "WHERE cc.id_campana = :idCampana",
             nativeQuery = true)
     List<Tienda> findByCampanaId(@Param("idCampana") Integer idCampana);
-
-    // NUEVA CONSULTA: Buscar tiendas de un coordinador específico usando la tabla intermedia
+    
     @Query(value = "SELECT t.* FROM tienda t " +
             "JOIN tienda_campana_coordinador tcc ON t.id_tienda = tcc.id_tienda " +
             "WHERE tcc.id_coordinador = :idCoordinador",

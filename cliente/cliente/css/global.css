@@ -1,0 +1,56 @@
+/* ==========================================================================
+   VARIABLES DE DISEÑO - PALETA INDIGO & SLATE PREMIUM (RECOMENDADA)
+   ========================================================================== */
+:root {
+    /* Fondos limpios y luminosos */
+    --bg-app-principal: #F8FAFC;   /* Gris ultra-claro premium */
+    --bg-card: #ffffff;            /* Blanco puro para tarjetas flotantes */
+
+    /* Identidad de la barra lateral (Sidebar) y Bloques oscuros */
+    --bg-sidebar: #0F172A;         /* Gris pizarra casi negro para el menú lateral */
+    --bg-sidebar-header: #020617;  /* Negro pizarra profundo para el bloque del logo */
+
+    /* Jerarquía de Textos */
+    --text-dark-main: #0F172A;     /* Títulos e inputs principales */
+    --text-dark-secondary: #334155;/* Subtítulos y textos intermedios */
+    --text-muted: #64748B;         /* Gris Slate para textos secundarios y labels */
+
+    /* Color de Acento Principal (El alma de la interfaz) */
+    --accent-color: #4F46E5;       /* Índigo eléctrico moderno */
+    --text-light: #F1F5F9;         /* Texto claro para leer sobre el sidebar oscuro */
+
+    --fuente-principal: 'Inter', system-ui, -apple-system, sans-serif;
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Sombras ultra-suaves de diseño moderno (El secreto de una interfaz premium) */
+    --shadow-premium: 0 4px 6px -1px rgba(15, 23, 42, 0.03),
+    0 2px 4px -1px rgba(15, 23, 42, 0.02);
+    --shadow-hover: 0 20px 25px -5px rgba(79, 70, 229, 0.1),
+    0 10px 10px -5px rgba(15, 23, 42, 0.04); /* Sutil aura índigo al pasar el ratón */
+}
+
+/* ==========================================================================
+   RESET DE NAVEGADOR
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--bg-app-principal);
+    color: var(--text-dark-main);
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}

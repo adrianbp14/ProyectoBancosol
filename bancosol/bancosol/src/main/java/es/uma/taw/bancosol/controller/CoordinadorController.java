@@ -71,7 +71,6 @@ public class CoordinadorController {
     @GetMapping
     public ResponseEntity<List<Coordinador>> listarCoordinadores() {
         try {
-            // Buscamos todos los coordinadores en la base de datos
             List<Coordinador> lista = coordinadorRepository.findAll();
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
@@ -79,24 +78,18 @@ public class CoordinadorController {
         }
     }
 
-    // ==========================================
-    // MÉTODO PARA EDITAR
-    // ==========================================
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarCoordinador(@PathVariable Integer id, @RequestBody PersonalLogisticaDTO dto) {
         try {
-            // Buscamos el coordinador que vamos a editar
             Coordinador coord = coordinadorRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Coordinador no encontrado"));
 
-            // Actualizamos sus datos
             coord.setNombre(dto.getNombre());
             coord.setApellidos(dto.getApellidos());
             coord.setEmail(dto.getEmail());
             coord.setTelefono(dto.getTelefono());
             coord.setEntidadPertenencia(dto.getEntidadPertenencia());
 
-            // Actualizar Localidad si la envían
             if (dto.getIdLocalidad() != null) {
                 coord.setLocalidad(localidadRepository.findById(dto.getIdLocalidad()).orElse(null));
             }
@@ -108,48 +101,33 @@ public class CoordinadorController {
         }
     }
 
-    // ==========================================
-    // MÉTODO PARA ELIMINAR
-    // ==========================================
     @DeleteMapping("/{id}")
     public ResponseEntity<?> borrarCoordinador(@PathVariable Integer id) {
         try {
-            // Buscamos el coordinador
             Coordinador coord = coordinadorRepository.findById(id).orElse(null);
+
             if (coord != null) {
-                // Lo borramos de la base de datos
                 coordinadorRepository.delete(coord);
                 return ResponseEntity.ok().body("{\"mensaje\": \"Coordinador borrado con éxito\"}");
             }
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            // Si salta esta excepción suele ser porque tiene Tiendas asignadas y PostgreSQL bloquea el borrado por seguridad (Foreign Key)
             return ResponseEntity.badRequest().body("Error al borrar: " + e.getMessage());
         }
     }
 
 
-    // ==========================================
-    // CUADRO DE MANDO DEL COORDINADOR
-    // ==========================================
     @GetMapping("/{id}/dashboard")
     public ResponseEntity<DashboardCoordinadorDTO> obtenerDashboardCoordinador(@PathVariable Integer id) {
         try {
-            // 1. Verificar que el coordinador existe
             Coordinador coord = coordinadorRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Coordinador no encontrado"));
 
             DashboardCoordinadorDTO dashboard = new DashboardCoordinadorDTO();
 
-            // -------------------------------------------------------------
-            // TODO: Aquí tendrás que llamar a los Repositorios de verdad.
-            // Por ejemplo: tiendaRepository.countByCoordinador(coord);
-            // -------------------------------------------------------------
-
-            // DATOS FALSOS PARA PROBAR LA CONEXIÓN FRONT-BACK:
             dashboard.setTotalTiendasAsignadas(4);
             dashboard.setKilosTotalesZona(1250.50);
-            dashboard.setTurnosIncompletos(2); // ¡Atención a esto!
+            dashboard.setTurnosIncompletos(2);
 
             return ResponseEntity.ok(dashboard);
 
@@ -165,12 +143,10 @@ public class CoordinadorController {
             @RequestParam(name = "idCampana", defaultValue = "1") Integer idCampana) {
         try {
             if (rol != null && rol.toUpperCase().contains("ADMIN")) {
-                // El admin ve todas las tiendas de la campaña actual
                 List<Tienda> tiendasCampana = tiendaRepository.findByCampanaId(idCampana);
                 return ResponseEntity.ok(tiendasCampana);
             }
 
-            // Si es un coordinador normal, solo ve las suyas
             List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorId(id);
             return ResponseEntity.ok(tiendas);
         } catch (Exception e) {

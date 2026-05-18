@@ -15,16 +15,17 @@ function inicializarPagina() {
         return;
     }
 
-    const tituloH1 = document.querySelector('#titulo-perfil');
-    const userNameSpan = document.querySelector('#user-name');
+    const tituloH1 = document.querySelector('.top-header-modern h1');
+    const userNameSpan = document.querySelector('#nombre-usuario');
+
     const puestoActual = user.puesto;
 
     if (userNameSpan) {
-        userNameSpan.textContent = 'Usuario: ' + (user.username || 'Desconocido');
+        userNameSpan.textContent = user.nombre || 'Desconocido';
     }
 
-    if (tituloH1) {
-        // 2. Lógica de títulos incluyendo al Administrador
+    if (tituloH1 && puestoActual) {
+        // Lógica de títulos según el string exacto que viene de tu base de datos relacional
         switch (puestoActual) {
             case 'Administrador':
                 tituloH1.textContent = 'Panel de Control Total: Administrador';

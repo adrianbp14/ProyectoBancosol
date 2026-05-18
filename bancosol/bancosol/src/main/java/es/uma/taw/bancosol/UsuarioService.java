@@ -19,12 +19,12 @@ public class UsuarioService {
 
         if (oUsuario.isPresent()) {
             Usuario usuario = oUsuario.get();
-            // Verificamos que esté activo y que la contraseña coincida
+
             if (usuario.getActivo() && usuario.getPassword().equals(password)) {
                 return usuario;
             }
         }
-        return null; // O lanza una excepción personalizada
+        return null;
     }
 
     public List<Usuario> listarUsuarios() {

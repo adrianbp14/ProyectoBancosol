@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface AsignacionVoluntariosRepository extends JpaRepository<AsignacionVoluntarios, Integer> {
-    // Busca si ya existe una cabecera de asignación para esa tienda y campaña
     Optional<AsignacionVoluntarios> findByTienda_IdTiendaAndIdCampana(Integer idTienda, Integer idCampana);
 
     List<AsignacionVoluntarios> findByTienda_IdTienda(Integer idTienda);
