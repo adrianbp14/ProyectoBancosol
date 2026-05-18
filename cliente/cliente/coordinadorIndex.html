@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil Admin - BancoSol</title>
+
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/admin.css">
+
+    <script src="js/auth-common.js" defer></script>
+    <script src="js/worker.js" defer></script>
+</head>
+
+<body>
+
+<div class="dashboard-wrapper">
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>BancoSol</h2>
+            <p>Administración</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="admin.html" class="active">
+                <span>🏠</span> Inicio
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button id="btn-cierre-sesion">Cerrar sesión</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="header">
+            <h1>Perfil de Administrador</h1>
+            <div id="nombre-usuario" class="user-info">Cargando usuario...</div>
+        </header>
+
+        <h3 class="dashboard-panel-title">Panel de Control Principal</h3>
+
+        <div class="cards-grid">
+
+            <a href="mapa.html" class="dash-card">
+                <div class="card-icon">🗺️</div>
+                <h3>Mapa Interactivo</h3>
+            </a>
+
+            <a href="admin_colaboradores.html" class="dash-card">
+                <div class="card-icon">📋</div>
+                <h3>Listado de Colaboradores</h3>
+            </a>
+
+            <a href="logistica.html" class="dash-card">
+                <div class="card-icon">🚚</div>
+                <h3>Asignación y Logística</h3>
+            </a>
+
+            <a href="personal_logisitca.html" class="dash-card">
+                <div class="card-icon">👨‍💻</div>
+                <h3>Creación personal</h3>
+            </a>
+
+            <a href="coordinador.html" class="dash-card">
+                <div class="card-icon">👌</div>
+                <h3>Panel de Coordinación</h3>
+            </a>
+
+        </div>
+
+        <footer class="admin-footer">
+            <p>&copy; 2026 BancoSol. Todos los derechos reservados.</p>
+        </footer>
+    </main>
+
+</div>
+
+</body>
+</html>

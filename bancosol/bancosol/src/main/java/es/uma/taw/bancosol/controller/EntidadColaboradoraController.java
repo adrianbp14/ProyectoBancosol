@@ -14,27 +14,20 @@ public class EntidadColaboradoraController {
     @Autowired
     private EntidadColaboradoraService colaboradorService;
 
-    // Escucha las peticiones POST en http://localhost:8080/api/colaboradores
     @PostMapping
     public ResponseEntity<EntidadColaboradora> crearColaborador(@RequestBody EntidadColaboradora colaborador) {
         try {
-            // Pasamos el JSON recibido a nuestro Servicio
             EntidadColaboradora nuevoColaborador = colaboradorService.guardarNuevoColaborador(colaborador);
 
-            // Si todo va bien, devolvemos un código 200 (OK) al Frontend
             return ResponseEntity.ok(nuevoColaborador);
         } catch (Exception e) {
-            // Si algo falla (ej. base de datos caída), devolvemos un error 400
             return ResponseEntity.badRequest().build();
         }
     }
 
-    // Este metodo escucha peticiones GET en /api/colaboradores
-    // y devuelve la lista completa de colaboradores
     @GetMapping
     public ResponseEntity<java.util.List<EntidadColaboradora>> obtenerTodosLosColaboradores() {
         try {
-            // Usamos el repositorio que ya tienes para sacar todo de la base de datos
             java.util.List<EntidadColaboradora> lista = colaboradorService.obtenerTodos();
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
@@ -45,7 +38,6 @@ public class EntidadColaboradoraController {
     @PutMapping("/{id}/estado")
     public ResponseEntity<EntidadColaboradora> actualizarEstado(@PathVariable Long id, @RequestBody java.util.Map<String, String> body) {
         try {
-            // Extraemos el estado que nos manda el frontend en el JSON
             String nuevoEstado = body.get("estado");
             EntidadColaboradora actualizado = colaboradorService.cambiarEstado(id, nuevoEstado);
             return ResponseEntity.ok(actualizado);

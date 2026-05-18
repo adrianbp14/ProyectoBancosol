@@ -1,6 +1,6 @@
 const PAGINAS_POR_PUESTO = {
   'Administrador': 'admin.html',
-  'Coordinador': 'coordinador.html',
+  'Coordinador': 'coordinadorIndex.html',
   'Capitan': 'capi-respEnt.html',
   'Responsable de Entidad': 'capi-respEnt.html',
   'Responsable de Tienda': 'respTienda.html'

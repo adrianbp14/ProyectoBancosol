@@ -1,0 +1,144 @@
+/* ==========================================================================
+   CONEXIÓN CON EL ARCHIVO CORE (GLOBAL)
+   ========================================================================== */
+@import url('global.css');
+
+body {
+    font-family: var(--fuente-principal);
+    background-color: var(--bg-app-principal);
+    color: var(--text-dark-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+/* ==========================================================================
+   TARJETA DEL FORMULARIO (#login-form)
+   ========================================================================== */
+#login-form {
+    background-color: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05),
+    0 8px 10px -6px rgba(15, 23, 42, 0.05); /* Sombra flotante suave */
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid #e2e8f0;
+}
+
+h1 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    text-align: center;
+    color: var(--text-dark-main);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+/* Etiquetas de los Inputs */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-dark-secondary);
+}
+
+/* Cajas de texto */
+input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: var(--transition-smooth);
+    color: var(--text-dark-main);
+    font-family: inherit;
+    background-color: #ffffff;
+}
+
+/* Efecto Focus al escribir */
+input:focus {
+    outline: none;
+    border-color: var(--accent-color);         /* Cambia a Índigo */
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); /* Brillo índigo suave */
+}
+
+/* ==========================================================================
+   CONTENEDOR ESPECIAL PARA LA CONTRASEÑA Y EL OJO (👁️)
+   ========================================================================== */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+.password-wrapper input {
+    padding-right: 45px;
+    margin-bottom: 0;
+}
+
+#toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    width: auto;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: opacity 0.2s ease;
+}
+
+#toggle-password:hover {
+    background: none;
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   BOTÓN DE ENVÍO (SUBMIT)
+   ========================================================================= */
+#login-form button[type="submit"] {
+    width: 100%;
+    padding: 0.85rem;
+    background-color: var(--accent-color);     /* Índigo principal */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+#login-form button[type="submit"]:hover {
+    background-color: #4338ca;                 /* Un índigo más corporativo e intenso */
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    transform: translateY(-1px);
+}
+
+#login-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   MENSAJES DE FEEDBACK
+   ========================================================================== */
+#message {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    min-height: 1.2rem;
+    font-weight: 500;
+}
+
+.error { color: #ef4444; }
+.success { color: #10b981; }

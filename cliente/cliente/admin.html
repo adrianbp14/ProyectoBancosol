@@ -5,77 +5,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil Admin - BancoSol</title>
-  <!-- Asegúrate de que la ruta a tu CSS es correcta -->
-  <link rel="stylesheet" href="css/admin.css"> 
+
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+
   <script src="js/auth-common.js" defer></script>
   <script src="js/worker.js" defer></script>
 </head>
 
-<body class="admin-body">
-  
-  <!-- Cabecera reutilizando tu banner -->
-  <header class="banner-superior" style="background-color: var(--primary-color);">
-    <h2>Perfil de Administrador</h2>
-    <p id="nombre-usuario" style="color: #e0e7ff; margin-top: 10px; font-size: 1.1rem;"></p>
-  </header>
+<body>
 
-  <!-- Contenedor de la disposición a dos columnas -->
-  <div class="admin-layout">
-    
-    <!-- BARRA LATERAL (Izquierda) -->
-    <aside class="sidebar-nav">
-      <nav>
-        <ul class="nav-links">
-          <li><a href="admin.html">Inicio</a></li>
-        </ul>
-      </nav>
-      <!-- Botón de cerrar sesión reutilizando tu estilo base -->
+<div class="dashboard-wrapper">
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>BancoSol</h2>
+      <p>Administración</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="admin.html" class="active">
+        <span>🏠</span> Inicio
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
       <button id="btn-cierre-sesion">Cerrar sesión</button>
-    </aside>
+    </div>
+  </aside>
 
-    <!-- ZONA CENTRAL (Cajas) -->
-    <main class="dashboard-content">
-      <h3 style="color: var(--text-color); margin-bottom: 20px;">Panel de Control Principal</h3>
-      
-      <div class="cards-container">
-        <!-- Cajas de enlaces -->
-        <a href="mapa.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">🗺️</span>
-          Mapa Interactivo
-        </a>
-        
-        <a href="admin_colaboradores.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">📋</span>
-          Listado de Colaboradores
-        </a>
-        
-        <a href="logistica.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">🚚</span>
-          Asignación y Logística
-        </a>
+  <main class="main-content">
 
-        <a href="campanas.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">📅</span>
-          Gestión de Campañas
-        </a>
+    <header class="header">
+      <h1>Perfil de Administrador</h1>
+      <div id="nombre-usuario" class="user-info">Cargando usuario...</div>
+    </header>
 
-        <a href="personal_logisitca.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">👨‍💻</span>
-          Creación personal
-        </a>
+    <h3 class="dashboard-panel-title">Panel de Control Principal</h3>
 
-        <a href="coordinador.html" class="dashboard-card">
-          <span style="font-size: 2rem; display: block; margin-bottom: 10px;">👌</span>
-          Panel de Coordinación
-        </a>
-      </div>
-    </main>
+    <div class="cards-grid">
 
-  </div>
+      <a href="mapa.html" class="dash-card">
+        <div class="card-icon">🗺️</div>
+        <h3>Mapa Interactivo</h3>
+      </a>
 
-  <footer style="text-align: center; margin-top: 50px; color: #6b7280; font-size: 0.9rem;">
-    <p>&copy; 2026 Mi Aplicación. Todos los derechos reservados.</p>
-  </footer>
+      <a href="admin_colaboradores.html" class="dash-card">
+        <div class="card-icon">📋</div>
+        <h3>Listado de Colaboradores</h3>
+      </a>
+
+      <a href="logistica.html" class="dash-card">
+        <div class="card-icon">🚚</div>
+        <h3>Asignación y Logística</h3>
+      </a>
+
+      <a href="campanas.html" class="dash-card">
+        <div class="card-icon">📅</div>
+        <h3>Gestión de Campañas</h3>
+      </a>
+
+      <a href="personal_logisitca.html" class="dash-card">
+        <div class="card-icon">👨‍💻</div>
+        <h3>Creación personal</h3>
+      </a>
+
+      <a href="coordinador.html" class="dash-card">
+        <div class="card-icon">👌</div>
+        <h3>Panel de Coordinación</h3>
+      </a>
+
+    </div>
+
+    <footer class="admin-footer">
+      <p>&copy; 2026 BancoSol. Todos los derechos reservados.</p>
+    </footer>
+  </main>
+
+</div>
+
 </body>
-
 </html>

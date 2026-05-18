@@ -47,8 +47,6 @@ public class EntidadColaboradora {
     @JsonProperty("estado_validacion")
     private String estadoValidacion;
 
-    // --- RELACIONES (Claves Foráneas) ---
-
     @ManyToOne
     @JoinColumn(name = "id_localidad")
     @JsonProperty("localidad")
@@ -63,10 +61,8 @@ public class EntidadColaboradora {
     @JoinColumn(name = "ultima_campana_id")
     @JsonProperty("ultima_campana")
     private Campana ultimaCampana;
-
-    // --- RELACIÓN CON CONTACTOS (El "Uno a Muchos") ---
-
+    
     @OneToMany(mappedBy = "colaborador", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Importante para evitar bucles infinitos en el JSON
+    @JsonIgnore
     private List<ContactoColaborador> contactos;
 }
