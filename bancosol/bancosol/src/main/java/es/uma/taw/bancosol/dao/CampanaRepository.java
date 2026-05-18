@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CampanaRepository extends JpaRepository<Campana, Integer> {
-    // Esto permitirá buscar campañas por ID en TiendaService
+    
 }

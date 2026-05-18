@@ -24,9 +24,6 @@ public class CapitanController {
     @Autowired
     private LocalidadRepository localidadRepository;
 
-    // ==========================================
-    // LEER
-    // ==========================================
     @GetMapping
     public ResponseEntity<List<Capitan>> listarCapitanes() {
         try {
@@ -36,9 +33,6 @@ public class CapitanController {
         }
     }
 
-    // ==========================================
-    // CREAR
-    // ==========================================
     @PostMapping
     @Transactional
     public ResponseEntity<?> crearCapitan(@RequestBody PersonalLogisticaDTO dto) {
@@ -78,9 +72,6 @@ public class CapitanController {
         }
     }
 
-    // ==========================================
-    // ACTUALIZAR
-    // ==========================================
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarCapitan(@PathVariable Integer id, @RequestBody PersonalLogisticaDTO dto) {
         try {
@@ -102,10 +93,7 @@ public class CapitanController {
             return ResponseEntity.badRequest().body("Error al actualizar: " + e.getMessage());
         }
     }
-
-    // ==========================================
-    // BORRAR 
-    // ==========================================
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<?> borrarCapitan(@PathVariable Integer id) {
         try {

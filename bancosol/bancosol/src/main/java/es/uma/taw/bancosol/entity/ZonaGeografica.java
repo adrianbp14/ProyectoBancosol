@@ -1,5 +1,6 @@
 package es.uma.taw.bancosol.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,12 +24,7 @@ public class ZonaGeografica {
     @JsonProperty("nombre")
     private String nombre;
 
-    /*
-       Opcional: Si quieres acceder a todas las localidades de una zona
-       desde el objeto ZonaGeografica, puedes añadir esta relación:
-
     @OneToMany(mappedBy = "zona")
     @JsonIgnore
     private List<Localidad> localidades;
-    */
 }

@@ -16,13 +16,11 @@ public class VoluntarioController {
     @Autowired
     private VoluntarioRepository voluntarioRepository;
 
-    // EL QUE YA TENÍAIS: Listar todos
     @GetMapping
     public ResponseEntity<List<Voluntario>> obtenerTodos() {
         return ResponseEntity.ok(voluntarioRepository.findAll());
     }
 
-    // NUEVO 1: Registrar un voluntario desde el panel del coordinador
     @PostMapping
     public ResponseEntity<?> registrarVoluntario(@RequestBody Voluntario nuevoVoluntario) {
         try {
@@ -33,7 +31,6 @@ public class VoluntarioController {
         }
     }
 
-    // NUEVO 2: Filtrar los voluntarios que están libres para ser asignados a turnos
     @GetMapping("/disponibles")
     public ResponseEntity<List<Voluntario>> obtenerDisponibles() {
         try {

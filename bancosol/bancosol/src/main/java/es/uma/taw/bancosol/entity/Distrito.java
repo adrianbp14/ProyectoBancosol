@@ -21,8 +21,6 @@ public class Distrito {
     @JsonProperty("nombre")
     private String nombre;
 
-    // --- Relación (Clave Foránea) ---
-
     @ManyToOne
     @JoinColumn(name = "id_localidad")
     @JsonProperty("localidad")

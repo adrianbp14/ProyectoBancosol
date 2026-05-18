@@ -26,7 +26,7 @@ public class AuthController {
 
         if (usuario != null) {
             Map<String, Object> response = new HashMap<>();
-            response.put("token", "TOKEN-FALSO-PARA-PRUEBAS"); // Aquí iría el JWT real
+            response.put("token", "TOKEN-FALSO-PARA-PRUEBAS"); 
 
             Map<String, String> userDetails = new HashMap<>();
             userDetails.put("puesto", usuario.getRol().getNombre_rol());

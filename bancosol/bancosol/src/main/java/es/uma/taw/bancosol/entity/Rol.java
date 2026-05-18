@@ -18,8 +18,7 @@ public class Rol {
 
     @Column(name = "nombre_rol", nullable = false, length = 50)
     private String nombre_rol;
-
-    // Opcional: Relación inversa para ver qué usuarios tienen este rol
+    
     @OneToMany(mappedBy = "rol")
     @JsonIgnore
     private List<Usuario> usuarios;

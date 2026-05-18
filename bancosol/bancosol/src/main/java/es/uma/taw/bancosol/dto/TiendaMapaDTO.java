@@ -9,12 +9,12 @@ import lombok.Setter;
 public class TiendaMapaDTO {
     private Integer id;
 
-    @JsonProperty("resena_nombre") // Coincide con JS
+    @JsonProperty("resena_nombre") 
     private String nombre;
 
     private String domicilio;
 
-    @JsonProperty("codigo_postal") // ¡Esto faltaba!
+    @JsonProperty("codigo_postal")
     private String codigoPostal;
 
     private String localidad;
