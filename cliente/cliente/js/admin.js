@@ -6,10 +6,24 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 1. DESCARGAMOS LOS DATOS
+// 1. DESCARGAMOS LOS DATOS (¡Ahora con seguridad!)
 async function cargarColaboradores() {
     try {
-        const respuesta = await fetch('http://localhost:8080/api/colaboradores');
-        if (!respuesta.ok) throw new Error('Error al conectar con el servidor');
+        // Recuperamos el token de la memoria del navegador
+        const token = sessionStorage.getItem('token');
+
+        // Hacemos la petición añadiendo el "pase VIP" en las cabeceras
+        const respuesta = await fetch('http://localhost:8080/api/colaboradores', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!respuesta.ok) {
+            throw new Error('Error al conectar con el servidor: ' + respuesta.status);
+        }
         
         // Guardamos los datos en la "memoria" (variable global)
         listaColaboradoresGlobal = await respuesta.json();
@@ -19,6 +33,9 @@ async function cargarColaboradores() {
 
     } catch (error) {
         console.error("Error cargando tabla:", error);
+        // Opcional: Mostrar un mensajito en la tabla si falla la conexión
+        const tbody = document.querySelector('#tabla-colaboradores tbody');
+        if(tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error de conexión. Revisa la consola.</td></tr>`;
     }
 }
 
@@ -27,7 +44,6 @@ function pintarTabla(colaboradoresArray) {
     const tbody = document.querySelector('#tabla-colaboradores tbody');
     tbody.innerHTML = '';
 
-    // Si el filtro no encuentra nada, mostramos un mensaje amigable
     if (colaboradoresArray.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No se encontraron colaboradores con esos filtros</td></tr>';
         return;
@@ -36,36 +52,43 @@ function pintarTabla(colaboradoresArray) {
     colaboradoresArray.forEach(colab => {
         const tr = document.createElement('tr');
         
-        // Formateo de contactos
+        // Formateo de contactos (Aseguramos que lee nombre_contacto)
         let contactosHTML = '';
         if (colab.contactos && colab.contactos.length > 0) {
             contactosHTML = colab.contactos.map(c => 
-                `<div class="contacto-info"><strong>${c.nombreContacto}</strong>: ${c.telefono}</div>`
+                `<div class="contacto-info"><strong>${c.nombre_contacto || c.nombreContacto}</strong>: ${c.telefono}</div>`
             ).join('');
         } else {
             contactosHTML = '<em>Sin contactos</em>';
         }
 
-        const claseEstado = colab.estadoValidacion === 'Pendiente' ? 'status-pendiente' : 'status-aprobado';
+        // ¡AQUÍ ESTÁ LA MAGIA! Leemos exactamente las variables de @JsonProperty
+        const id = colab.id_colaborador;
+        const estado = colab.estado_validacion || 'Pendiente';
+        const codigo = colab.codigo_bancosol || '-';
+        // Extraemos el nombre de la localidad si existe
+        const nombreLocalidad = (colab.localidad && colab.localidad.nombre) ? colab.localidad.nombre : '-';
 
-        // Lógica de botones
+        const claseEstado = estado === 'Pendiente' ? 'status-pendiente' : 'status-aprobado';
+
+        // Lógica de botones (Ahora el ID sí existe, así que api.js funcionará)
         let botonesHTML = '';
-        if (colab.estadoValidacion === 'Pendiente') {
+        if (estado === 'Pendiente') {
             botonesHTML = `
-                <button onclick="ejecutarCambioEstado(${colab.idColaborador}, 'Aprobado')" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; width: 100%;">✔ Aprobar</button>
+                <button onclick="ejecutarCambioEstado(${id}, 'Aprobado')" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; width: 100%;">✔ Aprobar</button>
                 <br>
-                <button onclick="ejecutarCambioEstado(${colab.idColaborador}, 'Rechazado')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%;">✖ Rechazar</button>
+                <button onclick="ejecutarCambioEstado(${id}, 'Rechazado')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%;">✖ Rechazar</button>
             `;
         } else {
             botonesHTML = `<span style="color: #6c757d; font-size: 0.9em;">Sin acciones</span>`;
         }
 
         tr.innerHTML = `
-            <td>${colab.idColaborador}</td>
-            <td><strong>${colab.nombre}</strong><br><small>${colab.domicilio}</small></td>
-            <td>${colab.codigoBancosol || '-'}</td>
-            <td>${colab.localidad || '-'}</td>
-            <td><span class="status-badge ${claseEstado}">${colab.estadoValidacion}</span></td>
+            <td>${id}</td>
+            <td><strong>${colab.nombre}</strong><br><small>${colab.domicilio || ''}</small></td>
+            <td>${codigo}</td>
+            <td>${nombreLocalidad}</td>
+            <td><span class="status-badge ${claseEstado}">${estado}</span></td>
             <td>${contactosHTML}</td>
             <td>${botonesHTML}</td>
         `;
@@ -75,24 +98,22 @@ function pintarTabla(colaboradoresArray) {
 
 // 3. LA FUNCIÓN DEL FILTRO INTERACTIVO
 window.aplicarFiltros = function() {
-    // Capturamos lo que el usuario ha escrito o seleccionado
     const textoBusqueda = document.getElementById('buscar-nombre').value.toLowerCase();
     const estadoFiltro = document.getElementById('filtro-estado').value;
 
-    // Filtramos nuestra lista global usando JavaScript
     const filtrados = listaColaboradoresGlobal.filter(colab => {
-        // ¿El texto está en el nombre o en la localidad?
-        const coincideTexto = colab.nombre.toLowerCase().includes(textoBusqueda) || 
-                              (colab.localidad && colab.localidad.toLowerCase().includes(textoBusqueda));
+        // Extraemos el nombre de la localidad de forma segura para buscar
+        const locNombre = (colab.localidad && colab.localidad.nombre) ? colab.localidad.nombre.toLowerCase() : '';
         
-        // ¿El estado coincide con el desplegable?
-        const coincideEstado = (estadoFiltro === "Todos") || (colab.estadoValidacion === estadoFiltro);
+        // ¿El texto está en el nombre de la entidad o en la localidad?
+        const coincideTexto = colab.nombre.toLowerCase().includes(textoBusqueda) || locNombre.includes(textoBusqueda);
+        
+        // ¿El estado coincide con el desplegable? (Usamos estado_validacion)
+        const coincideEstado = (estadoFiltro === "Todos") || (colab.estado_validacion === estadoFiltro);
 
-        // Si cumple ambas, se queda en la lista
         return coincideTexto && coincideEstado;
     });
 
-    // Volvemos a pintar la tabla solo con los que han pasado el filtro
     pintarTabla(filtrados);
 }
 

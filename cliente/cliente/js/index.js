@@ -43,6 +43,16 @@ document.querySelector('#login-form').addEventListener('submit', async function 
       sessionStorage.setItem('token', datosInicioSesion.token);
       sessionStorage.setItem('user', JSON.stringify(datosInicioSesion.user));
 
+      let rolAsignar = datosInicioSesion.user.puesto.toUpperCase();
+      if (rolAsignar.includes('ADMIN')) {
+          rolAsignar = 'ADMIN';
+      }
+      sessionStorage.setItem('rol', rolAsignar);
+
+    
+      let idCoord = datosInicioSesion.user.idCoordinador || datosInicioSesion.user.id || datosInicioSesion.user.id_usuario || 0;
+      sessionStorage.setItem('id_coordinador', idCoord);
+
       const targetPage = PAGINAS_POR_PUESTO[datosInicioSesion.user.puesto];
 
       if (!targetPage) {

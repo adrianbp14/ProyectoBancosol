@@ -8,6 +8,11 @@ const API_TIENDAS = `${API_BASE}/api/tiendas`;     // Tiendas para el mapa
 const API_LOGISTICA = `${API_BASE}/api/logistica/tiendas`; // Logística
 const API_COLABORADORES = `${API_BASE}/api/colaboradores`; // Colaboradores
 const API_VOLUNTARIOS = `${API_BASE}/api/voluntarios`; // Ruta para tu tabla 'voluntario'
+const API_CAMPANAS = `${API_BASE}/api/campanas`; // Ruta campañas
+const API_COORDINADORES = `${API_BASE}/api/coordinadores`;
+const API_CAPITANES = `${API_BASE}/api/capitanes`;
+const API_LOCALIDADES = `${API_BASE}/api/localidades`;
+const API_DISTRITOS = `${API_BASE}/api/distritos`;
 
 // ==========================================
 // 🔐 AUTENTICACIÓN Y USUARIOS
@@ -152,9 +157,16 @@ async function obtenerTiendas() {
   }
 }
 
-async function obtenerTiendasLogistica() {
+// En api.js - Reemplaza tu función actual por esta:
+async function obtenerTiendasLogistica(idCampana = null) {
   const token = sessionStorage.getItem('token');
-  const respuesta = await fetch(API_LOGISTICA, { 
+  let url = API_LOGISTICA;
+
+  if (idCampana) {
+    url += `?campanaId=${idCampana}`;
+  }
+
+  const respuesta = await fetch(url, { 
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + token,
@@ -239,4 +251,140 @@ async function asignarVoluntarioTienda(idTienda, idVoluntario, idCampana) {
         const mensajeError = await respuesta.text();
         throw new Error(mensajeError);
     }
+}
+
+
+async function obtenerCampanas() {
+    const token = sessionStorage.getItem('token');
+    const respuesta = await fetch(API_CAMPANAS, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (respuesta.ok) {
+        return await respuesta.json();
+    } else {
+        throw new Error(`Error al obtener campañas: ${respuesta.status}`);
+    }
+}
+
+
+// ==========================================================
+// MANTENIMIENTO DE PERSONAL LOGÍSTICO (COORDINADORES/CAPITANES)
+// ==========================================================
+
+// --- UBICACIONES (LOCALIDADES Y DISTRITOS) ---
+async function obtenerLocalidades() {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_LOCALIDADES, { 
+        headers: { 'Authorization': `Bearer ${token}` } 
+    });
+    if (!res.ok) return [];
+    return await res.json();
+}
+
+async function obtenerDistritos() {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_DISTRITOS, { 
+        headers: { 'Authorization': `Bearer ${token}` } 
+    });
+    if (!res.ok) return [];
+    return await res.json();
+}
+
+// --- COORDINADORES ---
+async function obtenerCoordinadores() {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_COORDINADORES, { 
+        headers: { 'Authorization': `Bearer ${token}` } 
+    });
+    if (!res.ok) return [];
+    return await res.json();
+}
+
+async function crearCoordinadorAPI(payload) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_COORDINADORES, {
+        method: 'POST',
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+}
+
+async function actualizarCoordinadorAPI(id, payload) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(`${API_COORDINADORES}/${id}`, {
+        method: 'PUT',
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+}
+
+async function borrarCoordinadorAPI(id) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(`${API_COORDINADORES}/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Error al borrar coordinador");
+}
+
+// --- CAPITANES ---
+async function obtenerCapitanes() {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_CAPITANES, { 
+        headers: { 'Authorization': `Bearer ${token}` } 
+    });
+    if (!res.ok) return [];
+    return await res.json();
+}
+
+async function crearCapitanAPI(payload) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(API_CAPITANES, {
+        method: 'POST',
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+}
+
+async function actualizarCapitanAPI(id, payload) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(`${API_CAPITANES}/${id}`, {
+        method: 'PUT',
+        headers: { 
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json();
+}
+
+async function borrarCapitanAPI(id) {
+    const token = sessionStorage.getItem('token');
+    const res = await fetch(`${API_CAPITANES}/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Error al borrar capitán");
 }

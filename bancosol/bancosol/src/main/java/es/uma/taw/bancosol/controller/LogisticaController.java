@@ -50,19 +50,39 @@ public class LogisticaController {
     // ENDPOINTS EXISTENTES
     // ==========================================
     @GetMapping("/tiendas")
-    public List<Tienda> obtenerTodasLasTiendas() {
-        return tiendaRepository.findAll();
+    public List<Tienda> obtenerTiendas(@RequestParam(name = "campanaId", required = false) Integer campanaId) {
+        if (campanaId != null) {
+            // Buscamos solo las tiendas de esa campaña específica
+            return this.tiendaRepository.findByCampanaId(campanaId);
+        } else {
+            // Si no se selecciona campaña, devolvemos el listado completo
+            return this.tiendaRepository.findAll();
+        }
     }
 
     @PostMapping("/asignar")
     public ResponseEntity<?> asignar(@RequestBody Map<String, Object> datos) {
         try {
-            // 1. Extraemos los tres IDs necesarios del JSON que viene de la web
+            // 1. Extraemos Tienda y Campaña de forma segura
+            if (datos.get("idTienda") == null || datos.get("idCampana") == null) {
+                throw new RuntimeException("Faltan datos de la tienda o la campaña en la petición.");
+            }
             Integer idTienda = Integer.parseInt(datos.get("idTienda").toString());
-            Long idCoordinador = Long.parseLong(datos.get("idCoordinador").toString());
             Integer idCampana = Integer.parseInt(datos.get("idCampana").toString());
 
-            // 2. Llamamos al servicio con los TRES parámetros
+            // 2. Buscamos el ID del coordinador usando los posibles nombres que envíe tu JS
+            Object coordObj = datos.get("idCoordinador");
+            if (coordObj == null) coordObj = datos.get("idCoord");
+            if (coordObj == null) coordObj = datos.get("idUsuario");
+
+            if (coordObj == null) {
+                throw new RuntimeException("Falta el ID del coordinador en la petición.");
+            }
+
+            // Lo pasamos a Integer (o Long, según lo que espere tu TiendaService)
+            Integer idCoordinador = Integer.parseInt(coordObj.toString());
+
+            // 3. Llamamos al servicio
             tiendaService.asignarCoordinador(idTienda, idCoordinador, idCampana);
 
             return ResponseEntity.ok().body(Map.of("message", "Asignación realizada con éxito"));
@@ -125,4 +145,62 @@ public class LogisticaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    // ==========================================
+    // NUEVO ENDPOINT: LEER TURNOS DE UNA TIENDA
+    // ==========================================
+    @GetMapping("/tiendas/{idTienda}/turnos")
+    public ResponseEntity<?> obtenerTurnosDeTienda(@PathVariable Integer idTienda) {
+        try {
+            // 1. Buscamos los turnos (franjas) de esta tienda
+            List<AsignacionVoluntarios> asignaciones = asignacionRepo.findByTienda_IdTienda(idTienda);
+
+            // 2. Preparamos una lista a medida para el frontend
+            List<Map<String, Object>> respuesta = new java.util.ArrayList<>();
+
+            for (AsignacionVoluntarios asig : asignaciones) {
+                // Buscamos quiénes están apuntados a este turno concreto
+                List<AsignacionVoluntarioDetalle> detalles = detalleRepo.findByAsignacion_IdAsignacion(asig.getIdAsignacion());
+
+                Map<String, Object> turnoData = new java.util.HashMap<>();
+                turnoData.put("idTurno", asig.getIdAsignacion());
+
+                // Juntamos el día y la franja (ej. "Viernes - Mañana")
+                String dia = asig.getDiaSemana() != null ? asig.getDiaSemana() : "Día Sin Asignar";
+                String franja = asig.getTurnoFranja() != null ? asig.getTurnoFranja() : "";
+                turnoData.put("franjaHoraria", dia + " " + franja);
+
+                // Sacamos los datos de los voluntarios asignados
+                List<Map<String, Object>> listaVoluntarios = new java.util.ArrayList<>();
+                for(AsignacionVoluntarioDetalle det : detalles) {
+                    Voluntario v = det.getVoluntario();
+                    Map<String, Object> volData = new java.util.HashMap<>();
+                    volData.put("idVoluntario", v.getIdVoluntario()); // <-- Clave para poder borrarlo
+                    volData.put("nombre", v.getNombre() + " " + (v.getApellidos() != null ? v.getApellidos() : ""));
+                    listaVoluntarios.add(volData);
+                }
+                turnoData.put("voluntarios", listaVoluntarios);
+
+                respuesta.add(turnoData);
+            }
+            return ResponseEntity.ok(respuesta);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al cargar turnos: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // ELIMINAR VOLUNTARIO DE UN TURNO
+    // ==========================================
+    @DeleteMapping("/turnos/{idAsignacion}/voluntarios/{idVoluntario}")
+    public ResponseEntity<?> eliminarVoluntarioDeTurno(@PathVariable Integer idAsignacion, @PathVariable Integer idVoluntario) {
+        try {
+            detalleRepo.deleteByAsignacion_IdAsignacionAndVoluntario_IdVoluntario(idAsignacion, idVoluntario);
+            return ResponseEntity.ok().body("Voluntario eliminado");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al eliminar: " + e.getMessage());
+        }
+    }
+
 }
