@@ -1,6 +1,7 @@
 /**
  * Lógica específica para la página de Logística
  */
+const ROL_USUARIO_LOGUEADO = sessionStorage.getItem('rol') ? sessionStorage.getItem('rol').toUpperCase() : 'COORDINADOR';
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!sessionStorage.getItem('token')) {
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Recarga la tabla de tiendas según la campaña
 async function actualizarTablaTiendas(idCampana = null) {
     const tbody = document.getElementById('tabla-tiendas');
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando tiendas...</td></tr>';
@@ -34,18 +36,31 @@ async function actualizarTablaTiendas(idCampana = null) {
 
         tiendas.forEach(tienda => {
             const nombreLocalidad = tienda.localidad ? tienda.localidad.nombre : 'No definida';
+            
+            // 🛠️ LA MAGIA DE LOS PERMISOS AQUÍ 🛠️
+            // Por defecto, los botones de Jefe están vacíos
+            let botonesAdmin = ''; 
+            
+            // Si el que entra es el Administrador, le rellenamos los botones
+            if (ROL_USUARIO_LOGUEADO.includes('ADMIN')) {
+                botonesAdmin = `
+                    <button class="btn-action" onclick="abrirModal(${tienda.id_tienda}, '${tienda.resena_nombre}')">
+                        Coord.
+                    </button>
+                    <button class="btn-action" style="background-color: #f39c12; margin-left: 5px;" onclick="abrirModalCapitan(${tienda.id_tienda}, '${tienda.resena_nombre}')">
+                        Capitán
+                    </button>
+                `;
+            }
+
+            // Pintamos la fila. El Coordinador solo verá la variable botonesAdmin vacía y el botón verde.
             tbody.innerHTML += `
                 <tr>
                     <td>${tienda.id_tienda}</td>
                     <td>${tienda.resena_nombre}</td>
                     <td>${nombreLocalidad}</td>
                     <td>
-                        <button class="btn-action" onclick="abrirModal(${tienda.id_tienda}, '${tienda.resena_nombre}')">
-                            Coord.
-                        </button>
-                        <button class="btn-action" style="background-color: #f39c12; margin-left: 5px;" onclick="abrirModalCapitan(${tienda.id_tienda}, '${tienda.resena_nombre}')">
-                            Capitán
-                        </button>
+                        ${botonesAdmin}
                         <button class="btn-action" style="background-color: #28a745; margin-left: 5px;" onclick="abrirModalVoluntario(${tienda.id_tienda}, '${tienda.resena_nombre}')">
                             Voluntarios
                         </button>
