@@ -25,8 +25,4 @@ public class TiendaCampanaCoordinador {
     @ManyToOne
     @JoinColumn(name = "id_campana")
     private Campana campana;
-
-    @ManyToOne
-    @JoinColumn(name = "id_coordinador")
-    private Coordinador coordinador;
 }

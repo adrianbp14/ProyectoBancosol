@@ -11,22 +11,16 @@ body {
     color: var(--text);
     margin: 0;
     padding: 20px;
-    box-sizing: border-box; /* Asegura que el padding no rompa el tamaño */
-    height: 100vh;           /* Altura fija de la pantalla */
-    overflow: hidden;        /* Evita que aparezca la barra de scroll vertical */
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    height: 100%;           /* Ocupa el 100% de la pantalla fija */
-    display: flex;          /* Activamos flexbox */
-    flex-direction: column; /* Alinea los elementos uno debajo de otro */
 }
 
 header {
     text-align: center;
-    margin-bottom: 15px;    /* Reducido de 30px a 15px para ganar espacio */
+    margin-bottom: 30px;
 }
 
 header h1 { margin-bottom: 5px; color: var(--primary); }
@@ -35,33 +29,25 @@ header h1 { margin-bottom: 5px; color: var(--primary); }
     display: flex;
     gap: 15px;
     background: white;
-    padding: 15px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: var(--shadow);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
-    align-items: center;     /* Sigue alineando verticalmente al centro */
-    justify-content: center; /* ¡AÑADE ESTO! Centra todo el grupo horizontalmente */
-
-    width: fit-content;      /* Hace que el div del fondo se encoja al tamaño de su contenido */
-    margin-left: auto;       /* Junto con margin-right: auto centra todo el contenedor */
-    margin-right: auto;
-    flex-wrap: nowrap;
 }
 
 .input-group {
-    flex: 0 1 280px; /* Ya no crecen indefinidamente, se quedan en un tamaño más cómodo */
-    min-width: 200px;
+    flex: 1;
+    min-width: 250px;
 }
 
 input {
     width: 100%;
-    padding: 10px 12px; /* Reducido ligeramente para igualar visualmente la altura de los botones */
+    padding: 12px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     font-size: 14px;
     transition: border-color 0.2s;
-    box-sizing: border-box; /* Evita que el padding deforme el tamaño del input */
 }
 
 input:focus {
@@ -71,17 +57,28 @@ input:focus {
 }
 
 #map-wrapper {
-    flex: 1;               /* Obliga al contenedor a absorber TODO el espacio vertical libre */
-    min-height: 0;         /* Crucial para que flexbox funcione correctamente en pantallas pequeñas */
-    width: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid #e2e8f0;
 }
 
 #map {
+    height: 600px;
     width: 100%;
-    height: 100%;          /* Cambiado de un valor fijo (ej. 500px) a 100% */
-    border-radius: 12px;
-    box-shadow: var(--shadow);
 }
+
+.btn-secondary {
+    padding: 10px 20px;
+    background: #64748b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-secondary:hover { background: #475569; }
 
 /* Estilo personalizado del popup de Leaflet */
 .leaflet-popup-content-wrapper {
@@ -89,54 +86,60 @@ input:focus {
     padding: 5px;
 }
 
-/* Base unificada para ambos botones */
-.btn-secondary, .btn-nav {
+
+/* Estilo para el botón de navegación principal */
+.btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background-color: #ffffff;
-    color: #475569;
+    color: #475569; /* Gris azulado oscuro */
     border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    height: 42px;
-    padding: 0 20px;
+    padding: 10px 20px;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
-    font-family: 'Inter', sans-serif;
     cursor: pointer;
     transition: all 0.2s ease;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-/* Color y hover de Limpiar Filtros */
-.btn-secondary {
-    background: #64748b;
-    color: white;
-    border: none;
-}
-.btn-secondary:hover {
-    background: #475569;
-}
-
-/* Estilo de Volver al Inicio */
-.btn-nav {
-    background-color: #ffffff;
-    color: #475569;
-    border: 1px solid #e2e8f0;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
 }
+
+/* Efecto Hover (al pasar el ratón) */
 .btn-nav:hover {
     background-color: #f8fafc;
-    color: var(--primary);
+    color: var(--primary); /* El azul principal que definimos antes */
     border-color: var(--primary);
     transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
+/* Efecto Active (al hacer clic) */
 .btn-nav:active {
     transform: translateY(0);
     box-shadow: none;
 }
+
+/* Opcional: Añadir un icono de flecha mediante CSS */
 .btn-nav::before {
     content: '←';
     margin-right: 8px;
     font-size: 1.1em;
+}
+
+/* Botones de acción (si los usas dentro del mapa) */
+.btn-action {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-action:hover {
+    background: #1d4ed8;
 }

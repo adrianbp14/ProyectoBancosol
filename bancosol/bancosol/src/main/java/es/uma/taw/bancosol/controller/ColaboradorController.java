@@ -1,25 +1,25 @@
 package es.uma.taw.bancosol.controller;
 
-import es.uma.taw.bancosol.entity.EntidadColaboradora;
+import es.uma.taw.bancosol.entity.Colaborador;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import es.uma.taw.bancosol.EntidadColaboradoraService;
+import es.uma.taw.bancosol.ColaboradorService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/colaboradores")
 @CrossOrigin(origins = "*")
-public class EntidadColaboradoraController {
+public class ColaboradorController {
 
     @Autowired
-    private EntidadColaboradoraService colaboradorService;
+    private ColaboradorService colaboradorService;
 
     // Escucha las peticiones POST en http://localhost:8080/api/colaboradores
     @PostMapping
-    public ResponseEntity<EntidadColaboradora> crearColaborador(@RequestBody EntidadColaboradora colaborador) {
+    public ResponseEntity<Colaborador> crearColaborador(@RequestBody Colaborador colaborador) {
         try {
             // Pasamos el JSON recibido a nuestro Servicio
-            EntidadColaboradora nuevoColaborador = colaboradorService.guardarNuevoColaborador(colaborador);
+            Colaborador nuevoColaborador = colaboradorService.guardarNuevoColaborador(colaborador);
 
             // Si todo va bien, devolvemos un código 200 (OK) al Frontend
             return ResponseEntity.ok(nuevoColaborador);
@@ -32,10 +32,10 @@ public class EntidadColaboradoraController {
     // Este metodo escucha peticiones GET en /api/colaboradores
     // y devuelve la lista completa de colaboradores
     @GetMapping
-    public ResponseEntity<java.util.List<EntidadColaboradora>> obtenerTodosLosColaboradores() {
+    public ResponseEntity<java.util.List<Colaborador>> obtenerTodosLosColaboradores() {
         try {
             // Usamos el repositorio que ya tienes para sacar todo de la base de datos
-            java.util.List<EntidadColaboradora> lista = colaboradorService.obtenerTodos();
+            java.util.List<Colaborador> lista = colaboradorService.obtenerTodos();
             return ResponseEntity.ok(lista);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -43,11 +43,11 @@ public class EntidadColaboradoraController {
     }
 
     @PutMapping("/{id}/estado")
-    public ResponseEntity<EntidadColaboradora> actualizarEstado(@PathVariable Long id, @RequestBody java.util.Map<String, String> body) {
+    public ResponseEntity<Colaborador> actualizarEstado(@PathVariable Long id, @RequestBody java.util.Map<String, String> body) {
         try {
             // Extraemos el estado que nos manda el frontend en el JSON
             String nuevoEstado = body.get("estado");
-            EntidadColaboradora actualizado = colaboradorService.cambiarEstado(id, nuevoEstado);
+            Colaborador actualizado = colaboradorService.cambiarEstado(id, nuevoEstado);
             return ResponseEntity.ok(actualizado);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

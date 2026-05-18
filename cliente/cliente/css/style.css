@@ -1,143 +1,144 @@
 /* Variables globales: Cambia estos colores y se actualizará toda tu web */
 :root {
-    --primary-color: #004b87;      /* Morado moderno */
-    --primary-hover: #4338ca;
-    --bg-color: #f3f4f6;           /* Gris muy claro para el fondo */
-    --card-bg: #ffffff;            /* Blanco para el contenedor */
-    --text-color: #1f2937;
-    --error-color: #ef4444;
-    --success-color: #10b981;
-    --border-radius: 8px;
+    --primary-color: #004b87;      /* Azul oficial del proyecto */
+    --primary-dark: #003865;
+    --bg-gray: #f4f6f9;            /* El mismo gris que usáis en el admin */
+    --text-main: #2d3748;
+    --text-muted: #718096;
+    --white: #ffffff;
+    --border-color: #e2e8f0;
+    --shadow-pro: 0 10px 25px rgba(0, 0, 0, 0.05), 0 5px 10px rgba(0, 0, 0, 0.03);
 }
 
-/* Configuración base */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-gray);
+    margin: 0;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* Centra el contenido verticalmente */
-    margin: 0;
-    padding: 0;
-    background-color: #f4f6f9
+    min-height: 100vh;
+    color: var(--text-main);
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Contenedor principal (Card)*/
+#login-form {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-pro);
+    width: 100%;
+    max-width: 380px;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+#login-form h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 8px 0;
+    text-align: center;
+}
+
+/* Subtítulo decorativo */
+#login-form h1::after {
+    content: "Identifícate para continuar";
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 5px;
     margin-bottom: 30px;
 }
 
-/* Contenedor principal (Card) */
-#login-form {
-    background-color: var(--card-bg);
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px; /* Tamaño ideal para login */
-}
-
-h1 {
-    margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    text-align: center;
-    color: var(--text-color);
-}
-
-/* Inputs y Etiquetas */
 label {
     display: block;
-    margin-bottom: 0.5rem;
+    font-size: 13px;
     font-weight: 600;
-    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
 }
 
 input {
     width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1.25rem;
-    border: 1px solid #d1d5db;
-    border-radius: var(--border-radius);
-    box-sizing: border-box; /* Evita que el input se salga del contenedor */
-    transition: border-color 0.2s;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    background-color: #fcfcfc;
 }
 
 input:focus {
     outline: none;
     border-color: var(--primary-color);
-    right: 2px solid var(--primary-color);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(0, 75, 135, 0.1);
 }
 
-/* Botón estilizado */
-button {
+/* Botón de Entrada: Sólido y profesional */
+button[type="submit"] {
     width: 100%;
-    padding: 0.75rem;
+    padding: 13px;
     background-color: var(--primary-color);
-    color: white;
+    color: var(--white);
     border: none;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
+    border-radius: 6px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background 0.2s ease;
+    margin-top: 10px;
 }
 
-button:hover {
-    background-color: var(--primary-hover);
+button[type="submit"]:hover {
+    background-color: var(--primary-dark);
 }
 
-/* Mensajes de feedback */
-#message {
-    margin-top: 1rem;
-    text-align: center;
-    font-size: 0.9rem;
-    min-height: 1.2rem;
-}
-
-.error { color: var(--error-color); }
-.success { color: var(--success-color); }
-
-/* Contenedor del input de password */
+/* Contenedor contraseña y botón ojo */
 .password-wrapper {
     position: relative;
-    width: 100%;
+    margin-bottom: 20px;
 }
 
-/* Ajuste del input para que el texto no se pise con el botón */
 .password-wrapper input {
-    padding-right: 45px; /* Espacio extra a la derecha */
-    margin-bottom: 0;    /* Quitamos el margen para que el wrapper maneje el espacio */
+    margin-bottom: 0;
+    padding-right: 45px;
 }
 
-/* El botón de "ojo" */
 #toggle-password {
     position: absolute;
-    right: 10px;
+    right: 12px;
     top: 50%;
-    transform: translateY(-50%); /* Centrado vertical perfecto */
+    transform: translateY(-50%);
     background: none;
     border: none;
-    width: auto;
-    padding: 5px;
+    padding: 0;
     cursor: pointer;
-    font-size: 1.2rem;
-    color: #6b7280;
+    font-size: 18px;
+    color: var(--text-muted);
+    width: auto;
 }
 
 #toggle-password:hover {
-    background: none; /* Evitamos el fondo morado del botón principal */
-    opacity: 0.7;
+    color: var(--primary-color);
 }
 
-/* Re-añadimos el margen al wrapper para separar del botón de login */
-.password-wrapper {
-    margin-bottom: 1.25rem;
+/* Feedback de errores */
+#message {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
 }
+
+.error { color: #d93025; font-weight: 500; }
+.success { color: #188038; font-weight: 500; }
 
 /* Ejemplo de estilos para elementos en worker.html */
 .sidebar {
@@ -149,78 +150,6 @@ button:hover {
     background-color: var(--card-bg);
     border-radius: var(--border-radius);
     border: 1px solid #ddd;
-}
-
-
-/* 1. Nueva fila para alinear ambos botones en horizontal y centrados */
-.filtros-fila-botones {
-    display: flex;
-    justify-content: center;
-    gap: 15px; /* Separación entre los dos botones */
-    width: 100%;
-}
-
-/* 2. El nuevo estilo unificado para ambos botones (sin lo innecesario) */
-.btn-nav, .btn-buscar {
-    height: 42px;
-    padding: 0 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    white-space: nowrap;
-    box-sizing: border-box;
-    display: inline-flex;  /* Lo mantenemos solo aquí para que el icono '←' y el texto se alineen perfectamente */
-    align-items: center;
-    justify-content: center;
-    width: 180px;          /* Forzamos a que ambos midan EXACTAMENTE lo mismo de ancho */
-    margin: 0;
-}
-
-/* 3. Estilo visual específico del botón "Volver al Inicio" (Blanco) */
-.btn-nav {
-    background-color: #ffffff;
-    color: #475569;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.btn-nav:hover {
-    background-color: #f8fafc;
-    color: var(--primary-color);  /* Corregido para usar tu variable global */
-    border-color: var(--primary-color);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-/* Flecha decorativa exclusiva del botón volver */
-.btn-nav::before {
-    content: '←';
-    margin-right: 8px;
-    font-size: 1.1em;
-}
-
-/* 4. Estilo visual específico del botón "Buscar" (Azul BancoSol) */
-.btn-buscar {
-    background-color: var(--primary-color);
-    color: #ffffff;
-    border: 1px solid var(--primary-color);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-.btn-buscar:hover {
-    background-color: var(--primary-hover);
-    border-color: var(--primary-hover);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-/* Efecto común al hacer click en cualquiera de los dos */
-.btn-nav:active, .btn-buscar:active {
-    transform: translateY(0);
-    box-shadow: none;
 }
 
 
@@ -305,7 +234,7 @@ tr:hover {
 }
 
 /* Mantenemos las alturas iguales */
-.filtro-input, .filtro-select {
+.filtro-input, .filtro-select, .btn-buscar {
     height: 45px;
     padding: 0 15px;
     border: 1px solid #ccc;
@@ -324,6 +253,21 @@ tr:hover {
     min-width: 200px; /* Un tamaño fijo para que no se aplaste */
 }
 
+/* El botón ahora tiene su propio tamaño y diseño */
+.btn-buscar {
+    background-color: #004b87;
+    color: rgb(206, 206, 206);
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.2s;
+    width: 200px; /* Ancho fijo para que no sea gigante */
+    border-radius: 25px; /* Bordes un poco más redondeados para que parezca un botón principal */
+}
+
+.btn-buscar:hover {
+    background-color: #004b87;
+}
 
 body.admin-body {
     display: block;       /* Apaga el flex que centra el login verticalmente */
@@ -349,4 +293,109 @@ body.admin-body {
     margin: 0;
     font-size: 2.2rem;
     font-weight: bold;
+}
+
+/* Nuevo estilo unificado para el botón de volver */
+.btn-nav {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;              
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    text-decoration: none;
+    margin: 0;
+    white-space: nowrap;      
+}
+
+.btn-nav:hover {
+    background-color: #f8fafc;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.btn-nav:active {
+    transform: translateY(0);
+}
+
+.card {
+    background: var(--white);
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-pro);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.btn-action {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    height: 42px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.btn-action:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 75, 135, 0.2);
+}
+
+.btn-action:active {
+    transform: translateY(0);
+}
+
+#selectCampana {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 15px;
+    background-color: #fcfcfc;
+    color: var(--text-main);
+    outline: none;
+}
+
+#selectCampana:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 75, 135, 0.1);
+}
+
+#contenedor-cadenas {
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+    background-color: #fcfcfc;
 }

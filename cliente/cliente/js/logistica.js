@@ -10,28 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
     inicializarPagina();
-
-    const selectCampana = document.getElementById('select-campana');
-    if (selectCampana) {
-        selectCampana.addEventListener('change', (event) => {
-            const idCampanaSeleccionada = event.target.value;
-            actualizarTablaTiendas(idCampanaSeleccionada); 
-        });
-    }
-
 });
 
-// Recarga la tabla de tiendas según la campaña
-async function actualizarTablaTiendas(idCampana = null) {
-    const tbody = document.getElementById('tabla-tiendas');
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando tiendas...</td></tr>';
-    
+// 1. Cargar y renderizar la tabla
+async function inicializarPagina() {
     try {
-        const tiendas = await obtenerTiendasLogistica(idCampana);
+        const tiendas = await obtenerTiendasLogistica(); 
+        const tbody = document.getElementById('tabla-tiendas');
         tbody.innerHTML = ''; 
 
         if (tiendas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay tiendas en esta campaña.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4">No hay tiendas registradas.</td></tr>';
             return;
         }
 
@@ -53,89 +42,56 @@ async function actualizarTablaTiendas(idCampana = null) {
                 </tr>
             `;
         });
-    } catch (error) {
-        console.error("Error al cargar tiendas filtradas:", error);
-        tbody.innerHTML = '<tr><td colspan="4" class="error" style="text-align:center;">Error al conectar con el servidor.</td></tr>';
-    }
-}
 
-// 1. Cargar datos base al abrir la página
-async function inicializarPagina() {
-    // 1. CARGA DINÁMICA DE CAMPAÑAS (Nuevo bloque)
-    try {
-        const campanas = await obtenerCampanas();
-        const selectCampana = document.getElementById('select-campana');
-        
-        if (selectCampana) {
-            selectCampana.innerHTML = '<option value="">-- Selecciona una Campaña --</option>';
-            
-            campanas.forEach(c => {
-                const option = document.createElement('option');
-                // Usamos id_campana y nombre según tu esquema de base de datos
-                option.value = c.id_campana; 
-                option.textContent = c.nombre; 
-                selectCampana.appendChild(option);
-            });
-        }
-    } catch (error) {
-        console.error("Error al cargar las campañas dinámicas:", error);
-        const selectCampana = document.getElementById('select-campana');
-        if (selectCampana) {
-            selectCampana.innerHTML = '<option value="">-- Error al cargar campañas --</option>';
-        }
-    }
-
-    // 2. Cargamos las tiendas (sin filtro inicial)
-    await actualizarTablaTiendas(); 
-
-    // 3. Cargamos los coordinadores y voluntarios para las modales
-    try {
-        // -- NUEVO: Llamamos a tu endpoint de coordinadores --
-        const resCoordinadores = await fetch('http://localhost:8080/api/coordinadores');
-        const listaCoordinadores = await resCoordinadores.json();
-        
-        // -- VOLUNTARIOS (Se queda igual que lo tenías) --
+        // 2. Cargamos los usuarios con "red de seguridad" para el error de CORS
         try {
-            const voluntarios = await obtenerListaVoluntarios();
-            const selectVoluntarios = document.getElementById('select-voluntario');
-            
-            const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
+            const usuarios = await cargarUsuarios();
+            // 3. Cargamos los voluntarios para la nueva modal
+            try {
+                const voluntarios = await obtenerListaVoluntarios();
+                const selectVoluntarios = document.getElementById('select-voluntario');
 
-            if (selectVoluntarios) {
-                selectVoluntarios.innerHTML = ''; 
+                // Si la API de colaboradores devuelve un array directo o paginado
+                const listaVoluntarios = Array.isArray(voluntarios) ? voluntarios : (voluntarios.content || []);
+
                 listaVoluntarios.forEach(v => {
                     const option = document.createElement('option');
                     option.value = v.id_voluntario;
                     option.textContent = `${v.nombre} ${v.apellidos || ''}`;
                     selectVoluntarios.appendChild(option);
                 });
+            } catch (error) {
+                console.error("Error al cargar voluntarios:", error);
             }
-        } catch (error) {
-            console.error("Error al cargar voluntarios:", error);
-        }
-        
-        // -- COORDINADORES: Rellenamos el desplegable --
-        const select = document.getElementById('select-coordinador');
-        if (select) {
-            select.innerHTML = '<option value="">-- Selecciona un Coordinador --</option>';
+            console.log("¡ÉXITO! Datos recibidos del servidor:", usuarios); 
             
-            listaCoordinadores.forEach(c => {
-                console.log("Coordinador recibido de Java:", c);
+            const select = document.getElementById('select-coordinador');
+            select.innerHTML = '<option value="">-- Selecciona un perfil --</option>';
+            
+            // Normalizamos la lista (por si viene dentro de un objeto 'users')
+            const listaUsuarios = Array.isArray(usuarios) ? usuarios : (usuarios.users || []);
+
+            listaUsuarios.forEach(u => {
                 const option = document.createElement('option');
-                // Buscamos el ID real del coordinador
-                option.value = c.id || c.idCoordinador || c.id_coordinador; 
-                // Juntamos nombre y apellidos
-                option.textContent = `${c.nombre} ${c.apellidos || ''}`; 
+                // Usamos los nombres exactos de tu base de datos
+                option.value = u.id_usuario; 
+                option.textContent = u.nombre_completo; 
                 select.appendChild(option);
             });
+            
+            console.log("Desplegable actualizado con datos reales.");
+
+        } catch (error) {
+            // Si llegamos aquí, la consola nos dirá exactamente QUÉ falló
+            console.error("ERROR REAL AL CARGAR USUARIOS:", error);
+            const select = document.getElementById('select-coordinador');
+            select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
         }
 
     } catch (error) {
-        console.error("ERROR AL CARGAR COORDINADORES:", error);
-        const select = document.getElementById('select-coordinador');
-        if (select) {
-            select.innerHTML = '<option value="">-- Error: Revisa la consola --</option>';
-        }
+        console.error("Error al cargar tiendas:", error);
+        document.getElementById('tabla-tiendas').innerHTML = 
+            '<tr><td colspan="4" class="error">Error al conectar con el servidor.</td></tr>';
     }
 }
 
@@ -156,7 +112,6 @@ document.getElementById('btn-confirmar-asignacion').onclick = async () => {
     const idCoord = document.getElementById('select-coordinador').value;
     
     const idCampana = document.getElementById('select-campana').value;
-    console.log("Enviando -> Tienda:", idTienda, " | Coordinador:", idCoord, " | Campaña:", idCampana);
     
     if(!idCampana) {
         alert("Por favor, selecciona una campaña antes de asignar.");

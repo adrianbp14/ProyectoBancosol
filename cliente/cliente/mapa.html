@@ -6,6 +6,7 @@
     <title>Panel de Tiendas | Localizador</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <!-- Google Fonts para un look moderno -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/mapa.css">
 </head>
 <body>
@@ -18,14 +19,15 @@
 
     <div class="search-container">
         <div class="input-group">
-            <label for="busquedaNombre"></label><input type="text" id="busquedaNombre" placeholder="Buscar por nombre de tienda...">
+            <input type="text" id="busquedaNombre" placeholder="Buscar por nombre de tienda...">
         </div>
         <div class="input-group">
-            <label for="busquedaCP"></label><input type="text" id="busquedaCP" placeholder="Código Postal (ej: 28001)">
+            <input type="text" id="busquedaCP" placeholder="Código Postal (ej: 28001)">
         </div>
         <button id="btnLimpiar" class="btn-secondary">Limpiar Filtros</button>
-        <button class="btn-nav" onclick="window.location.href='admin.html'">Volver al Inicio</button>
     </div>
+
+    <button class="btn-nav" onclick="window.location.href='admin.html'">Volver al Inicio</button>
 
     <div id="map-wrapper">
         <div id="map"></div>

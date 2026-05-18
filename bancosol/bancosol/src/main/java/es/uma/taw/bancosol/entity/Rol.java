@@ -1,6 +1,5 @@
 package es.uma.taw.bancosol.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +20,5 @@ public class Rol {
 
     // Opcional: Relación inversa para ver qué usuarios tienen este rol
     @OneToMany(mappedBy = "rol")
-    @JsonIgnore
     private List<Usuario> usuarios;
 }
