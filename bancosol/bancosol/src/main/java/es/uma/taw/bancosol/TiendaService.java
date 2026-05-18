@@ -15,7 +15,7 @@ public class TiendaService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private CampanaRepository campanaRepository; // <--- NUEVO
+    private CampanaRepository campanaRepository;
 
     @Autowired
     private TiendaCampanaCoordinadorRepository asignacionRepository;
@@ -23,6 +23,8 @@ public class TiendaService {
     @Autowired
     private CoordinadorRepository coordinadorRepository;
 
+    @Autowired
+    private CapitanRepository capitanRepository;
 
     // Ojo: si en tu controlador pasabas un Long, pon Long idCoordinador. Si era Integer, pon Integer.
     public void asignarCoordinador(Integer idTienda, Integer idCoordinador, Integer idCampana) {
@@ -49,5 +51,17 @@ public class TiendaService {
 
         // 5. Guardamos la asignación
         asignacionRepository.save(nuevaAsignacion);
+    }
+
+    public void asignarCapitan(Integer idTienda, Integer idCapitan) {
+        Tienda tienda = tiendaRepository.findById(idTienda)
+                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
+
+        Capitan capitan = capitanRepository.findById(idCapitan)
+                .orElseThrow(() -> new RuntimeException("Capitán no encontrado"));
+
+        // Usamos el campo id_usuario que ya tiene la Tienda para guardar al Capitán sin romper la BD
+        tienda.setUsuario(capitan.getUsuario());
+        tiendaRepository.save(tienda);
     }
 }

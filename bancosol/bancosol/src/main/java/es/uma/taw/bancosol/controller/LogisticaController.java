@@ -51,26 +51,30 @@ public class LogisticaController {
     // ==========================================
     @GetMapping("/tiendas")
     public List<Tienda> obtenerTiendas(@RequestParam(name = "campanaId", required = false) Integer campanaId) {
+        List<Tienda> lista;
+
         if (campanaId != null) {
             // Buscamos solo las tiendas de esa campaña específica
-            return this.tiendaRepository.findByCampanaId(campanaId);
+            lista = this.tiendaRepository.findByCampanaId(campanaId);
         } else {
             // Si no se selecciona campaña, devolvemos el listado completo
-            return this.tiendaRepository.findAll();
+            lista = this.tiendaRepository.findAll();
         }
+
+        lista.sort(java.util.Comparator.comparing(Tienda::getIdTienda));
+
+        return lista;
     }
 
     @PostMapping("/asignar")
     public ResponseEntity<?> asignar(@RequestBody Map<String, Object> datos) {
         try {
-            // 1. Extraemos Tienda y Campaña de forma segura
             if (datos.get("idTienda") == null || datos.get("idCampana") == null) {
                 throw new RuntimeException("Faltan datos de la tienda o la campaña en la petición.");
             }
             Integer idTienda = Integer.parseInt(datos.get("idTienda").toString());
             Integer idCampana = Integer.parseInt(datos.get("idCampana").toString());
 
-            // 2. Buscamos el ID del coordinador usando los posibles nombres que envíe tu JS
             Object coordObj = datos.get("idCoordinador");
             if (coordObj == null) coordObj = datos.get("idCoord");
             if (coordObj == null) coordObj = datos.get("idUsuario");
@@ -79,14 +83,16 @@ public class LogisticaController {
                 throw new RuntimeException("Falta el ID del coordinador en la petición.");
             }
 
-            // Lo pasamos a Integer (o Long, según lo que espere tu TiendaService)
             Integer idCoordinador = Integer.parseInt(coordObj.toString());
 
-            // 3. Llamamos al servicio
             tiendaService.asignarCoordinador(idTienda, idCoordinador, idCampana);
 
             return ResponseEntity.ok().body(Map.of("message", "Asignación realizada con éxito"));
         } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("duplicate")) {
+                return ResponseEntity.status(409).body("duplicate: Esta tienda ya tiene coordinador.");
+            }
+
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error al asignar: " + e.getMessage());
         }
@@ -200,6 +206,27 @@ public class LogisticaController {
             return ResponseEntity.ok().body("Voluntario eliminado");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al eliminar: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // NUEVO ENDPOINT: ASIGNAR CAPITÁN
+    // ==========================================
+    @PostMapping("/asignar-capitan")
+    public ResponseEntity<?> asignarCapitan(@RequestBody Map<String, Object> datos) {
+        try {
+            if (datos.get("idTienda") == null || datos.get("idCapitan") == null) {
+                throw new RuntimeException("Faltan datos de la tienda o del capitán.");
+            }
+            Integer idTienda = Integer.parseInt(datos.get("idTienda").toString());
+            Integer idCapitan = Integer.parseInt(datos.get("idCapitan").toString());
+
+            tiendaService.asignarCapitan(idTienda, idCapitan);
+
+            return ResponseEntity.ok().body(Map.of("message", "Capitán asignado con éxito"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error al asignar capitán: " + e.getMessage());
         }
     }
 

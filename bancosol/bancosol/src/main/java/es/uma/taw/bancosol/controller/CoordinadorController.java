@@ -165,13 +165,12 @@ public class CoordinadorController {
             @RequestParam(name = "idCampana", defaultValue = "1") Integer idCampana) {
         try {
             if (rol != null && rol.toUpperCase().contains("ADMIN")) {
-                // El admin ve todas las tiendas de la campaña actual
                 List<Tienda> tiendasCampana = tiendaRepository.findByCampanaId(idCampana);
                 return ResponseEntity.ok(tiendasCampana);
             }
 
-            // Si es un coordinador normal, solo ve las suyas
-            List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorId(id);
+            // Ahora filtramos por Coordinador Y por Campaña
+            List<Tienda> tiendas = tiendaRepository.findTiendasByCoordinadorAndCampana(id, idCampana);
             return ResponseEntity.ok(tiendas);
         } catch (Exception e) {
             e.printStackTrace();

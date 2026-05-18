@@ -1,19 +1,52 @@
-// Leemos dinámicamente los datos guardados al iniciar sesión
 const ID_COORDINADOR_LOGUEADO = parseInt(sessionStorage.getItem('id_coordinador')) || 1;
 const ROL_USUARIO_LOGUEADO = sessionStorage.getItem('rol') || 'COORDINADOR'; 
-// (Dejamos valores por defecto por si recargas la página a mano sin pasar por el login)
 let tiendaSeleccionadaId = null;
 
-document.addEventListener("DOMContentLoaded", () => {
-    cargarTiendasAsignadas(ID_COORDINADOR_LOGUEADO);
+document.addEventListener("DOMContentLoaded", async () => {
+    // Primero cargamos las campañas
+    await cargarCampanasEnSelector();
+    
+    const selectCampana = document.getElementById('select-campana-coord');
+    // Cargamos tiendas con la campaña seleccionada por defecto
+    if(selectCampana && selectCampana.value) {
+        cargarTiendasAsignadas(ID_COORDINADOR_LOGUEADO, selectCampana.value);
+    }
+
+    // Evento al cambiar de campaña
+    if (selectCampana) {
+        selectCampana.addEventListener('change', (e) => {
+            cargarTiendasAsignadas(ID_COORDINADOR_LOGUEADO, e.target.value);
+            document.getElementById('panel-turnos').style.display = 'none';
+        });
+    }
 });
 
-// 1. LISTAR TIENDAS ASIGNADAS
-async function cargarTiendasAsignadas(id) {
+async function cargarCampanasEnSelector() {
+    try {
+        const campanas = await obtenerCampanas();
+        const select = document.getElementById('select-campana-coord');
+        select.innerHTML = '';
+        
+        if(campanas.length === 0) {
+            select.innerHTML = '<option value="">No hay campañas disponibles</option>';
+            return;
+        }
+        
+        campanas.forEach(c => {
+            const option = document.createElement('option');
+            option.value = c.id_campana || c.idCampana || c.id; 
+            option.textContent = c.nombre;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error al cargar campañas:", error);
+    }
+}
+
+async function cargarTiendasAsignadas(idCoordinador, idCampana) {
     const tbody = document.getElementById('tabla-mis-tiendas');
     try {
-        // Petición al endpoint de tiendas asignadas a este coordinador
-        const res = await fetch(`${API_BASE}/api/coordinadores/${ID_COORDINADOR_LOGUEADO}/tiendas?rol=${ROL_USUARIO_LOGUEADO}`);
+        const res = await fetch(`${API_BASE}/api/coordinadores/${idCoordinador}/tiendas?rol=${ROL_USUARIO_LOGUEADO}&idCampana=${idCampana}`);
         if (!res.ok) throw new Error("No se pudieron cargar las tiendas");
         const tiendas = await res.json();
 
@@ -24,23 +57,16 @@ async function cargarTiendasAsignadas(id) {
         }
 
         tiendas.forEach(t => {
-            // 1. ID de la tienda
             const idReal = t.id_tienda || t.idTienda || t.id;
-            
-            // 2. Establecimiento (usamos resena_nombre que es el que usáis en Logística)
             const nombreReal = t.resena_nombre || t.resenaNombre || t.nombre || "Tienda Desconocida";
-            
-            // 3. Dirección y Localidad
             const direccionReal = t.direccion || t.domicilio || "Sin dirección";
             const localidadReal = (t.localidad && t.localidad.nombre) ? t.localidad.nombre : "Localidad no definida";
 
-            // 4. Capitán (Si Spring Boot manda el objeto capitán dentro de la tienda, lo pintará. Si manda null, saldrá "Sin asignar")
             let capitanStr = '<em>Sin asignar</em>';
-            if (t.capitan && t.capitan.nombre) {
-                capitanStr = `${t.capitan.nombre} ${t.capitan.apellidos || ''}`;
+            if (t.usuario) {
+                capitanStr = t.usuario.nombre_completo || t.usuario.nombre || "Capitán asignado";
             }
 
-            // Pintamos la fila dinámica
             tbody.innerHTML += `
                 <tr>
                     <td><strong>${nombreReal}</strong></td>
@@ -141,14 +167,13 @@ async function asignarColaboradorATurno(idTurnoBase) {
     }
 
     try {
-        // Hacemos el POST exacto que espera tu LogisticaController
         const res = await fetch(`${API_BASE}/api/logistica/asignar-voluntario`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 idTienda: tiendaSeleccionadaId, 
                 idVoluntario: parseInt(idVoluntario),
-                idCampana: ID_CAMPANA_ACTUAL 
+                idCampana: document.getElementById('select-campana-coord').value 
             })
         });
 
