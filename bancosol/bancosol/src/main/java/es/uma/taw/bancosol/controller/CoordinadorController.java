@@ -35,7 +35,7 @@ public class CoordinadorController {
             Usuario nuevoUsuario = new Usuario();
 
             String nombreLimpio = dto.getNombre().toLowerCase().trim().replace(" ", "");
-            nuevoUsuario.setUsername(nombreLimpio + "_" + System.currentTimeMillis() + "_coord");
+            nuevoUsuario.setUsername(nombreLimpio + "_coord");
 
             nuevoUsuario.setPassword("bancosol123");
             nuevoUsuario.setNombre_completo(dto.getNombre() + " " + (dto.getApellidos() != null ? dto.getApellidos() : ""));

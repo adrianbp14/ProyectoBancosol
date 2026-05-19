@@ -40,7 +40,7 @@ public class CapitanController {
             Usuario nuevoUsuario = new Usuario();
 
             String nombreLimpio = dto.getNombre().toLowerCase().trim().replace(" ", "");
-            nuevoUsuario.setUsername(nombreLimpio + "_" + System.currentTimeMillis() + "_capitan");
+            nuevoUsuario.setUsername(nombreLimpio + "_" + "_capitan");
 
             nuevoUsuario.setPassword("bancosol123");
             nuevoUsuario.setNombre_completo(dto.getNombre() + " " + (dto.getApellidos() != null ? dto.getApellidos() : ""));
