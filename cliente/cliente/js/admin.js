@@ -39,7 +39,6 @@ async function cargarColaboradores() {
     }
 }
 
-// 2. LA MAGIA DE PINTAR LA TABLA (Separado para poder reutilizarlo)
 function pintarTabla(colaboradoresArray) {
     const tbody = document.querySelector('#tabla-colaboradores tbody');
     tbody.innerHTML = '';
@@ -62,14 +61,20 @@ function pintarTabla(colaboradoresArray) {
             contactosHTML = '<em>Sin contactos</em>';
         }
 
-        // ¡AQUÍ ESTÁ LA MAGIA! Leemos exactamente las variables de @JsonProperty
         const id = colab.id_colaborador;
         const estado = colab.estado_validacion || 'Pendiente';
         const codigo = colab.codigo_bancosol || '-';
         // Extraemos el nombre de la localidad si existe
         const nombreLocalidad = (colab.localidad && colab.localidad.nombre) ? colab.localidad.nombre : '-';
 
-        const claseEstado = estado === 'Pendiente' ? 'status-pendiente' : 'status-aprobado';
+        let claseEstado = '';
+        if (estado === 'Pendiente') {
+            claseEstado = 'status-pendiente'; // Amarillo
+        } else if (estado === 'Rechazado') {
+            claseEstado = 'status-rechazado'; // Rojo
+        } else {
+            claseEstado = 'status-aprobado'; // Verde (para Aprobado, Validado, etc.)
+        }
 
         // Lógica de botones (Ahora el ID sí existe, así que api.js funcionará)
         let botonesHTML = '';
