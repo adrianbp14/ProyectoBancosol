@@ -3,7 +3,7 @@
  */
 const PAGINAS_POR_PUESTO_GLOBAL = {
     'Administrador': 'admin.html',
-    'Coordinador': 'coordinadorIndex.html',
+    'Coordinador': 'coordinador.html',
     'Capitan': 'capitan.html',
     'Responsable de Entidad': 'capi-respEnt.html',
     'Responsable de Tienda': 'respTienda.html'
