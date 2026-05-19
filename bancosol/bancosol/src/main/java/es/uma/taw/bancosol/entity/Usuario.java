@@ -26,7 +26,7 @@ public class Usuario {
     private String email;
 
     private Boolean activo;
-    
+  
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;

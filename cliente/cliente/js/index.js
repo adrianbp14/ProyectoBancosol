@@ -2,7 +2,7 @@ const PAGINAS_POR_PUESTO = {
   'Administrador': 'admin.html',
   'Coordinador': 'coordinador.html',
   'Capitan': 'capitan.html',
-  'Responsable de Entidad': 'capi-respEnt.html',
+  'Responsable de Entidad': 'responsable-entidad.html',
   'Responsable de Tienda': 'respTienda.html'
 };
 
@@ -50,8 +50,14 @@ document.querySelector('#login-form').addEventListener('submit', async function 
       sessionStorage.setItem('rol', rolAsignar);
 
       // CAPTURA DIRECTA: Obtenemos el id_usuario que acabamos de inyectar en el mapa
-      let idCoord = datosInicioSesion.user.id_usuario || 0;
-      sessionStorage.setItem('id_coordinador', idCoord);
+      // 1. Extraemos el id_usuario real de la base de datos que viene en el JSON
+      let idLogueado = datosInicioSesion.user.id_usuario || 0;
+
+      // 2. Lo guardamos como 'id_coordinador' para no romper las pantallas de tus compañeros
+      sessionStorage.setItem('id_coordinador', idLogueado);
+
+      // 3. Lo guardamos como 'id_usuario' para que lo use tu nueva pantalla de capitán
+      sessionStorage.setItem('id_usuario', idLogueado);
 
       const targetPage = PAGINAS_POR_PUESTO[datosInicioSesion.user.puesto];
 
