@@ -43,6 +43,8 @@ function pintarTabla(colaboradoresArray) {
     const tbody = document.querySelector('#tabla-colaboradores tbody');
     tbody.innerHTML = '';
 
+    const idRol = sessionStorage.getItem('rol');
+
     if (colaboradoresArray.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No se encontraron colaboradores con esos filtros</td></tr>';
         return;
@@ -53,6 +55,7 @@ function pintarTabla(colaboradoresArray) {
         
         // Formateo de contactos (Aseguramos que lee nombre_contacto)
         let contactosHTML = '';
+
         if (colab.contactos && colab.contactos.length > 0) {
             contactosHTML = colab.contactos.map(c => 
                 `<div class="contacto-info"><strong>${c.nombre_contacto || c.nombreContacto}</strong>: ${c.telefono}</div>`
@@ -69,21 +72,29 @@ function pintarTabla(colaboradoresArray) {
 
         let claseEstado = '';
         if (estado === 'Pendiente') {
-            claseEstado = 'status-pendiente'; // Amarillo
+            claseEstado = 'status-pendiente';
         } else if (estado === 'Rechazado') {
-            claseEstado = 'status-rechazado'; // Rojo
+            claseEstado = 'status-rechazado';
         } else {
-            claseEstado = 'status-aprobado'; // Verde (para Aprobado, Validado, etc.)
+            claseEstado = 'status-aprobado';
         }
 
         // Lógica de botones (Ahora el ID sí existe, así que api.js funcionará)
         let botonesHTML = '';
         if (estado === 'Pendiente') {
-            botonesHTML = `
-                <button onclick="ejecutarCambioEstado(${id}, 'Aprobado')" style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; width: 100%;">✔ Aprobar</button>
-                <br>
-                <button onclick="ejecutarCambioEstado(${id}, 'Rechazado')" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%;">✖ Rechazar</button>
-            `;
+            // Comprobamos si el ID del rol es 1 (Administrador)
+            if (idRol === "ADMIN") { 
+                botonesHTML = `
+                    <button onclick="ejecutarCambioEstado(${id}, 'Aprobado')" 
+                    style="background-color: #28a745; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; width: 100%;">✔ Aprobar</button>
+                    <br>
+                    <button onclick="ejecutarCambioEstado(${id}, 'Rechazado')" 
+                    style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; width: 100%;">✖ Rechazar</button>
+                `;
+            } else {
+                // Si el ID es cualquier otro (2, 3...), solo ve el texto
+                botonesHTML = `<span style="color: #856404; font-size: 0.9em;">Pendiente de Admin</span>`;
+            }
         } else {
             botonesHTML = `<span style="color: #6c757d; font-size: 0.9em;">Sin acciones</span>`;
         }
