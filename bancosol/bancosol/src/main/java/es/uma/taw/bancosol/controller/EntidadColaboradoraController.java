@@ -1,5 +1,7 @@
 package es.uma.taw.bancosol.controller;
 
+import es.uma.taw.bancosol.dao.EntidadColaboradoraRepository;
+import es.uma.taw.bancosol.entity.ContactoColaborador;
 import es.uma.taw.bancosol.entity.EntidadColaboradora;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,24 @@ public class EntidadColaboradoraController {
     @Autowired
     private EntidadColaboradoraService colaboradorService;
 
-    @PostMapping
-    public ResponseEntity<EntidadColaboradora> crearColaborador(@RequestBody EntidadColaboradora colaborador) {
-        try {
-            EntidadColaboradora nuevoColaborador = colaboradorService.guardarNuevoColaborador(colaborador);
+    @Autowired
+    private EntidadColaboradoraRepository entidadColaboradora;
 
-            return ResponseEntity.ok(nuevoColaborador);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    @PostMapping
+    public EntidadColaboradora crearColaborador(@RequestBody EntidadColaboradora nuevoColaborador) {
+
+        // 1. Por seguridad, forzamos que todos los nuevos entren como "Pendiente"
+        nuevoColaborador.setEstadoValidacion("Pendiente");
+
+        // 2. Enlazamos los contactos con esta entidad para que la base de datos sepa de quién son
+        if (nuevoColaborador.getContactos() != null) {
+            for (ContactoColaborador contacto : nuevoColaborador.getContactos()) {
+                contacto.setColaborador(nuevoColaborador);
+            }
         }
+
+        // 3. Guardamos todo en la base de datos (Supabase)
+        return entidadColaboradora.save(nuevoColaborador);
     }
 
     @GetMapping
