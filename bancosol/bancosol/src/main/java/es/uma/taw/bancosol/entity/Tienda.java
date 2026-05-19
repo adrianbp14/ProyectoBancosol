@@ -26,7 +26,7 @@ public class Tienda {
     private Integer idLinea;
 
     @Column(name = "resena_nombre", nullable = false)
-    @JsonProperty("resena_nombre") // Esto hará que en JS uses tienda.resena_nombre
+    @JsonProperty("resena_nombre")
     private String resenaNombre;
 
     @Column(name = "domicilio")
@@ -34,7 +34,7 @@ public class Tienda {
     private String domicilio;
 
     @Column(name = "codigo_postal")
-    @JsonProperty("codigo_postal") // Esto solucionará el problema del CP: N/A
+    @JsonProperty("codigo_postal")
     private String codigoPostal;
 
     @Column(name = "clasificacion")
@@ -61,13 +61,11 @@ public class Tienda {
     @JsonProperty("longitud")
     private Double longitud;
 
-    // Relación con Localidad
     @ManyToOne
     @JoinColumn(name = "id_localidad")
     @JsonProperty("localidad")
     private Localidad localidad;
 
-    // Nueva relación con Usuario (Coordinador)
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @JsonProperty("usuario")

@@ -1,110 +1,181 @@
-/* =========================================
-   ESTILOS ESPECÍFICOS DEL DASHBOARD ADMIN
-   ========================================= */
+@import url('global.css');
 
-/* Contenedor principal que separa la izquierda del centro */
-.admin-layout {
+.dashboard-wrapper {
     display: flex;
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    align-items: flex-start; /* Evita que la barra lateral se estire hacia abajo si hay poco contenido */
+    min-height: 100vh;
 }
 
-/* Barra lateral izquierda */
+.sidebar {
+    width: 280px;
+    background-color: var(--bg-sidebar); /* Oscuro */
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.sidebar-header {
+    padding: 30px 24px;
+    background-color: var(--bg-sidebar-header);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.sidebar-header p {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--accent-color); /* Tu turquesa destaca el rol */
+    font-weight: 500;
+}
+
 .sidebar-nav {
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    padding: 20px;
-    width: 250px;
-    display: flex; 
-    flex-direction: column;
-    min-height: 300px;
-    justify-content: space-between;
-    border-top: 6px solid #004b87;
-    background: linear-gradient(180deg, #ffffff 0%, #f5f3ff 100%); 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    flex: 1;
+    padding: 24px 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-color);
-    padding: 12px 15px;
-    border-radius: var(--border-radius);
-    transition: all 0.3s ease;
-    display: block;
-    font-weight: 600;
+.sidebar-nav a {
+    padding: 16px 24px;
+    color: #94a3b8; /* Texto grisáceo en el fondo oscuro */
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: var(--transition-smooth);
+    border-left: 4px solid transparent;
 }
 
-/* Efecto hover con tu color morado/azul solicitado */
-.nav-links a:hover {
-    background-color: #004b87;
-    color: white;
-    transform: translateX(5px); /* Pequeño empujón a la derecha */
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+    border-left-color: var(--accent-color);
 }
 
-/* Contenido Central */
-.dashboard-content {
-    flex: 1; /* Ocupa todo el espacio restante a la derecha */
-}
-
-/* Contenedor de las cajas con grid para que mantengan margenes exactos */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Se adaptan solas al ancho */
-    gap: 20px;
-}
-
-/* Estilo de las cajas (Tarjetas) */
-.dashboard-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 30px 20px;
-    text-align: center;
-    text-decoration: none;
-    color: var(--text-color);
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    /* Detalle de color exacto solicitado en el borde inferior */
-    border-bottom: 4px solid #004b87; 
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px); /* La caja "flota" hacia arriba */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    color: var(--primary-color); /* El texto cambia a tu color base */
+.sidebar-footer {
+    padding: 24px;
 }
 
 #btn-cierre-sesion {
-    background-color: #004b87; /* Tu azul corporativo */
-    color: white;
-    margin-top: 20px; /* Lo separa de los enlaces de arriba */
-    padding: 12px 20px;
-    border: none;
-    border-radius: 30px; /* ¡Aquí está la magia! 30px lo hace estilo "píldora" */
-    font-size: 1rem;
-    font-weight: bold;
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(239, 68, 68, 0.08);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease; /* Transición suave para todos los efectos */
-    width: 100%; /* Ocupa todo el ancho de la barra lateral */
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); /* Sombra suave con tu color */
+    transition: var(--transition-smooth);
 }
 
-/* Efecto al pasar el ratón */
 #btn-cierre-sesion:hover {
-    background-color: var(--primary-hover); /* Un azul ligeramente más oscuro */
-    transform: scale(1.03); /* Se hace un 3% más grande */
-    box-shadow: 0 6px 12px rgba(79, 70, 229, 0.4); /* La sombra se hace más grande */
+    background-color: #ef4444;
+    color: white;
+}
+
+/* ==========================================================================
+   ÁREA DE CONTENIDO (Luminosa y limpia)
+   ========================================================================== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera superior ahora en blanco puro */
+.header {
+    background-color: #ffffff;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0; /* Línea fina de separación */
+}
+
+.header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark-main);
+}
+
+/* Botón de "Cargando usuario..." */
+.user-info {
+    font-weight: 600;
+    color: var(--text-dark-secondary);
+    background: #f1f5f9;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 1px solid #e2e8f0;
+}
+
+.dashboard-panel-title {
+    padding: 40px 40px 10px 40px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark-main);
+}
+
+/* Rejilla de tarjetas */
+.cards-grid {
+    padding: 20px 40px 40px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.dash-card {
+    background: var(--bg-card); /* Blanco puro */
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-premium);
+    transition: var(--transition-smooth);
+    border: 1px solid #e2e8f0; /* Borde muy sutil */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Al pasar el ratón, la tarjeta se eleva y el borde se ilumina con tu turquesa */
+.dash-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent-color);
+}
+
+/* El cuadradito gris donde vive el emoji dentro de la tarjeta */
+.card-icon {
+    font-size: 24px;
+    margin-bottom: 16px;
+    background: #f1f5f9; /* Gris muy suave para resaltar el emoji */
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.dash-card h3 {
+    margin: 0;
+    color: var(--text-dark-secondary);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.admin-footer {
+    text-align: center;
+    padding: 24px;
+    margin-top: auto;
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }

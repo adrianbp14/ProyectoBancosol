@@ -28,11 +28,9 @@ public class TiendaController {
             dto.setNombre(t.getResenaNombre());
             dto.setDomicilio(t.getDomicilio());
 
-            // MAPEO DEL CÓDIGO POSTAL (Fundamental para que no salga N/A)
             dto.setCodigoPostal(t.getCodigoPostal());
 
             if (t.getLocalidad() != null) {
-                // Ajusta 'getNombre()' al método real de tu entidad Localidad (ej: getNombreLocalidad)
                 dto.setLocalidad(t.getLocalidad().getNombre());
             }
 

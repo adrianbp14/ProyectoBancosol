@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "contacto_colaborador")
-@Getter // Lombok: Genera todos los getters
-@Setter // Lombok: Genera todos los setters
-@NoArgsConstructor // Lombok: Genera el constructor vacío (public ContactoColaborador() {})
+@Getter
+@Setter
+@NoArgsConstructor
 public class ContactoColaborador {
 
     @Id

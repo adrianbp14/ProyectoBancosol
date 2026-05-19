@@ -17,7 +17,6 @@ public class Coordinador {
     @JsonProperty("id_coordinador")
     private Integer idCoordinador;
 
-    // length = 100 según el SQL
     @Column(name = "entidad_pertenencia", length = 100)
     @JsonProperty("entidad_pertenencia")
     private String entidadPertenencia;
@@ -38,21 +37,16 @@ public class Coordinador {
     @JsonProperty("apellidos")
     private String apellidos;
 
-    // --- Relaciones (Claves Foráneas confirmadas por el SQL) ---
-
-    // constraint colaborador_id_usuario_fkey foreign KEY (id_usuario) references usuario (id_usuario)
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @JsonProperty("usuario")
     private Usuario usuario;
 
-    // constraint coordinador_id_localidad_fkey foreign KEY (id_localidad) references localidad (id_localidad)
     @ManyToOne
     @JoinColumn(name = "id_localidad")
     @JsonProperty("localidad")
     private Localidad localidad;
-
-    // constraint fk_coordinador_distrito foreign KEY (id_distrito) references distrito (id_distrito)
+    
     @ManyToOne
     @JoinColumn(name = "id_distrito")
     @JsonProperty("distrito")

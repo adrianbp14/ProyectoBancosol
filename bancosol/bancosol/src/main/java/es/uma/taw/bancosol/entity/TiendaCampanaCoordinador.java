@@ -12,7 +12,7 @@ import lombok.Setter;
 public class TiendaCampanaCoordinador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id; // Si tiene un ID autogenerado, si no, usa clave compuesta
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "id_tienda")
@@ -25,4 +25,8 @@ public class TiendaCampanaCoordinador {
     @ManyToOne
     @JoinColumn(name = "id_campana")
     private Campana campana;
+
+    @ManyToOne
+    @JoinColumn(name = "id_coordinador")
+    private Coordinador coordinador;
 }

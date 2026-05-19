@@ -1,13 +1,7 @@
 package es.uma.taw.bancosol;
 
-import es.uma.taw.bancosol.dao.CampanaRepository;
-import es.uma.taw.bancosol.dao.TiendaCampanaCoordinadorRepository;
-import es.uma.taw.bancosol.entity.Campana;
-import es.uma.taw.bancosol.entity.Tienda;
-import es.uma.taw.bancosol.entity.TiendaCampanaCoordinador;
-import es.uma.taw.bancosol.entity.Usuario;
-import es.uma.taw.bancosol.dao.TiendaRepository;
-import es.uma.taw.bancosol.dao.UsuarioRepository;
+import es.uma.taw.bancosol.dao.*;
+import es.uma.taw.bancosol.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,30 +15,46 @@ public class TiendaService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private CampanaRepository campanaRepository; // <--- NUEVO
+    private CampanaRepository campanaRepository;
 
     @Autowired
     private TiendaCampanaCoordinadorRepository asignacionRepository;
 
+    @Autowired
+    private CoordinadorRepository coordinadorRepository;
 
-    public void asignarCoordinador(Integer idTienda, Long idUsuario, Integer idCampana) {
-        // 1. Buscamos las tres piezas en la base de datos
+    @Autowired
+    private CapitanRepository capitanRepository;
+
+
+    public void asignarCoordinador(Integer idTienda, Integer idCoordinador, Integer idCampana) {
         Tienda tienda = tiendaRepository.findById(idTienda)
                 .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
-
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
         Campana campana = campanaRepository.findById(idCampana)
                 .orElseThrow(() -> new RuntimeException("Campaña no encontrada"));
 
-        // 2. Creamos la "unión" en la tabla intermedia
+        Coordinador coordinador = coordinadorRepository.findById(idCoordinador)
+                .orElseThrow(() -> new RuntimeException("Coordinador no encontrado"));
+
         TiendaCampanaCoordinador nuevaAsignacion = new TiendaCampanaCoordinador();
         nuevaAsignacion.setTienda(tienda);
-        nuevaAsignacion.setUsuario(usuario);
         nuevaAsignacion.setCampana(campana);
 
-        // 3. Guardamos la asignación
+        nuevaAsignacion.setCoordinador(coordinador);
+        nuevaAsignacion.setUsuario(coordinador.getUsuario());
+
         asignacionRepository.save(nuevaAsignacion);
+    }
+
+    public void asignarCapitan(Integer idTienda, Integer idCapitan) {
+        Tienda tienda = tiendaRepository.findById(idTienda)
+                .orElseThrow(() -> new RuntimeException("Tienda no encontrada"));
+
+        Capitan capitan = capitanRepository.findById(idCapitan)
+                .orElseThrow(() -> new RuntimeException("Capitán no encontrado"));
+
+        // Usamos el campo id_usuario que ya tiene la Tienda para guardar al Capitán sin romper la BD
+        tienda.setUsuario(capitan.getUsuario());
+        tiendaRepository.save(tienda);
     }
 }

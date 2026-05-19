@@ -15,34 +15,25 @@ public class EntidadColaboradoraService {
 
     @Transactional
     public EntidadColaboradora guardarNuevoColaborador(EntidadColaboradora colaborador) {
-
-        // 1. Aplicamos la regla de negocio
         colaborador.setEstadoValidacion("Pendiente");
 
-        // 2. Nos aseguramos de que todos los contactos que vienen en el JSON
-        // sepan a qué colaborador pertenecen (Relación bidireccional)
         if (colaborador.getContactos() != null) {
             for (ContactoColaborador contacto : colaborador.getContactos()) {
                 contacto.setColaborador(colaborador);
             }
         }
 
-        // 3. Guardamos en la base de datos (Esto guarda el colaborador Y sus contactos a la vez)
         return colaboradorRepository.save(colaborador);
     }
 
-    // Añade esto en tu ColaboradorService.java
     public java.util.List<EntidadColaboradora> obtenerTodos() {
         return colaboradorRepository.findAll();
     }
 
-    // Añade esto en ColaboradorService.java
     public EntidadColaboradora cambiarEstado(Long id, String nuevoEstado) {
-        // Buscamos al colaborador en la base de datos
         EntidadColaboradora colab = colaboradorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Colaborador no encontrado"));
 
-        // Le cambiamos el estado y guardamos
         colab.setEstadoValidacion(nuevoEstado);
         return colaboradorRepository.save(colab);
     }

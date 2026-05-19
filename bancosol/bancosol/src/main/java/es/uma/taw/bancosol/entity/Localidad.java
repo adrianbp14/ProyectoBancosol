@@ -24,14 +24,12 @@ public class Localidad {
     @Column(name = "codigo_postal", nullable = false)
     @JsonProperty("codigo_postal")
     private String codigoPostal;
-
-    // Relación con Provincia
+    
     @ManyToOne
     @JoinColumn(name = "id_provincia", nullable = false)
     @JsonProperty("provincia")
     private Provincia provincia;
 
-    // Relación con Zona Geográfica (id_zona en tu SQL)
     @ManyToOne
     @JoinColumn(name = "id_zona")
     @JsonProperty("zona")
