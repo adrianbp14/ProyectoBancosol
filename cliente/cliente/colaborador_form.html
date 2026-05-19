@@ -49,12 +49,19 @@
                     
                     <div class="form-group">
                         <label for="localidad">Localidad</label>
-                        <input type="text" id="localidad" class="form-control" placeholder="Ej: Rincón de la Victoria">
+                        <select id="localidad" class="form-control" required>
+                            <option value="">Cargando localidades...</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
                         <label for="cpostal">Código Postal</label>
                         <input type="text" id="cpostal" class="form-control" maxlength="5" placeholder="Ej: 29730">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" class="form-control" rows="3" placeholder="Añade cualquier detalle relevante sobre este colaborador..."></textarea>
                     </div>
                     
                     <div class="form-group">

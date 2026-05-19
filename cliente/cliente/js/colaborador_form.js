@@ -1,6 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- 1. LÓGICA PARA AÑADIR/QUITAR CONTACTOS DINÁMICOS ---
+    // ========================================================
+    // BLOQUE 1: CARGAR DESPLEGABLE DE LOCALIDADES AL INICIO
+    // ========================================================
+    async function cargarLocalidades() {
+        try {
+            // Llama a la función de tu api.js
+            const localidades = await obtenerLocalidades(); 
+            const selectLocalidad = document.getElementById('localidad');
+            
+            selectLocalidad.innerHTML = '<option value="">-- Selecciona una localidad --</option>';
+            
+            localidades.forEach(loc => {
+                // Rellena el select con el ID en el value y el nombre en el texto
+                selectLocalidad.innerHTML += `<option value="${loc.id}">${loc.nombre}</option>`;
+            });
+        } catch (error) {
+            console.error("Error al cargar localidades", error);
+            document.getElementById('localidad').innerHTML = '<option value="">Error al cargar</option>';
+        }
+    }
+    
+    cargarLocalidades(); // Arrancamos esta función nada más cargar la página
+
+
+    // ========================================================
+    // BLOQUE 2: LÓGICA DE LOS CONTACTOS DINÁMICOS (Añadir/Quitar)
+    // ========================================================
     const contactosContainer = document.getElementById('contactosContainer');
     const btnAñadirContacto = document.getElementById('btnAñadirContacto');
     let contadorContactos = 0;
@@ -35,8 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarBotonAñadir();
     }
 
-    // Como esta función se llama desde el HTML (onclick="eliminarContacto(...)"), 
-    // necesitamos hacerla global asignándola a 'window'
+    // La función para eliminar se hace global (window) para que el HTML pueda llamarla
     window.eliminarContacto = function(id) {
         const elemento = document.getElementById(`contacto-${id}`);
         if (elemento) {
@@ -54,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Inicializamos con 1 contacto por defecto
-    crearPlantillaContacto();
+    crearPlantillaContacto(); // Creamos el primer contacto obligatorio al cargar
 
     btnAñadirContacto.addEventListener('click', () => {
         if (document.querySelectorAll('.contacto-card').length < MAX_CONTACTOS) {
@@ -63,61 +87,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 2. LÓGICA DE ENVÍO A SPRING BOOT ---
+
+    // ========================================================
+    // BLOQUE 3: RECOGER DATOS Y ENVIAR EL FORMULARIO (POST)
+    // ========================================================
     document.getElementById('formularioColaborador').addEventListener('submit', async function(e) {
         e.preventDefault();
 
+        // 3.1 Construimos el objeto principal exactamente como lo pide Java
         const payload = {
             nombre: document.getElementById('nombre').value,
             codigo_bancosol: document.getElementById('codigo').value,
             vinculado_bancosol: document.getElementById('vinculado').checked,
             domicilio: document.getElementById('domicilio').value,
-            //localidad: document.getElementById('localidad').value,
             codigo_postal: document.getElementById('cpostal').value,
-            num_voluntarios_estimado: parseInt(document.getElementById('voluntarios').value) || 0,        };
+            observaciones: document.getElementById('observaciones').value,
+            
+            // Pasamos la Localidad como un objeto con su ID
+            // ATENCIÓN: Si en Java el atributo de la ID se llama distinto (ej: idLocalidad), cambialo aquí abajo
+            localidad: { 
+                id: parseInt(document.getElementById('localidad').value) 
+            }
+        };
 
+        // 3.2 Recogemos todas las tarjetas de contactos que haya en pantalla
         const tarjetasContacto = document.querySelectorAll('.contacto-card');
         const contactosArray = [];
 
         tarjetasContacto.forEach((tarjeta, index) => {
             contactosArray.push({
-                nombreContacto: tarjeta.querySelector('.contacto-nombre').value,
+                nombreContacto: tarjeta.querySelector('.contacto-nombre').value, // Formato camelCase para Java
                 telefono: tarjeta.querySelector('.contacto-telefono').value,
                 email: tarjeta.querySelector('.contacto-email').value,
-                esPrincipal: index === 0
+                esPrincipal: index === 0 // El primero siempre es el principal
             });
         });
 
+        // 3.3 Metemos los contactos dentro del paquete principal
         payload.contactos = contactosArray;
 
-        console.log("Datos a enviar a Spring Boot:", JSON.stringify(payload, null, 2));
-
-        const token = sessionStorage.getItem('token') || localStorage.getItem('token_bancosol') || '';
         const mensajeAlerta = document.getElementById('mensajeAlerta');
 
+        // 3.4 Enviamos el paquete a la API (Spring Boot)
         try {
-            // Llamamos a la función limpia de api.js (apiCrearColaborador)
             await apiCrearColaborador(payload);
 
-            // Si no hay error, mostramos éxito visualmente
+            // Si todo va bien: Mensaje verde y resetear formulario
             mensajeAlerta.className = 'alert success';
             mensajeAlerta.innerText = "¡Colaborador guardado correctamente! Pendiente de validación.";
             
-            // Limpiamos el formulario y los contactos extra
             document.getElementById('formularioColaborador').reset();
             contactosContainer.innerHTML = '';
             contadorContactos = 0;
-            crearPlantillaContacto(); // Volvemos a dejar solo 1 contacto
+            crearPlantillaContacto(); // Volvemos a dejar un contacto vacío
             
         } catch (error) {
-            // Si la función de API lanza un error, mostramos la alerta roja
+            // Si algo falla: Mensaje rojo
             mensajeAlerta.className = 'alert error';
-            mensajeAlerta.innerText = "Error al guardar el colaborador. Comprueba los datos o la conexión.";
+            mensajeAlerta.innerText = "Error al guardar el colaborador. Comprueba los datos o la consola.";
             console.error(error);
         }
         
         mensajeAlerta.style.display = 'block';
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0); // Sube la pantalla arriba para que el usuario vea el mensaje
     });
 
 });
