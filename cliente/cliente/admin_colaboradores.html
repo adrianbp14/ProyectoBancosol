@@ -4,53 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listado de Colaboradores - BancoSol</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/colaboradores.css">
 </head>
-<body class="admin-body">
-    
-    <div class="banner-superior">
-        <h2>Listado completo de Colaboradores</h2>
-    </div>
+<body>
 
-    <div class="contenedor-tabla">
-        
-        <div class="filtros-container">
-            
-            <div class="filtros-fila-superior">
-                <input type="text" id="buscar-nombre" class="filtro-input" placeholder="Buscar por nombre o localidad..." onkeydown="comprobarEnter(event)">
-
-                <select id="filtro-estado" class="filtro-select">
-                    <option value="Todos">Todos los estados</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Validado">Validado</option>
-                    <option value="Rechazado">Rechazado</option>
-                </select>
-            </div>
-
-            <div class="filtros-fila-botones">
-                <button class="btn-buscar" onclick="aplicarFiltros()">Buscar</button>
+    <header class="main-header">
+        <div class="container">
+            <h1>Listado completo de Colaboradores</h1>
+            <nav>
                 <button id="btn-volver-inicio" class="btn-nav">Volver al Inicio</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Gestión de Entidades Colaboradoras</h2>
+            <p>Busca y filtra las entidades colaboradoras o actualiza su estado de validación.</p>
+            
+            <div class="filtros-container">
+                <div class="form-group">
+                    <label for="buscar-nombre">Buscar entidad:</label>
+                    <input type="text" id="buscar-nombre" class="filtro-input" placeholder="Nombre o localidad..." onkeydown="comprobarEnter(event)">
+                </div>
+
+                <div class="form-group">
+                    <label for="filtro-estado">Filtrar por estado:</label>
+                    <select id="filtro-estado" class="filtro-select">
+                        <option value="Todos">Todos los estados</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Validado">Validado</option>
+                        <option value="Rechazado">Rechazado</option>
+                    </select>
+                </div>
+
+                <div class="form-group btn-group">
+                    <button class="btn-buscar" onclick="aplicarFiltros()">Buscar</button>
+                </div>
             </div>
 
-        </div>
-
-        <table id="tabla-colaboradores">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre Entidad</th>
-                    <th>Código</th>
-                    <th>Localidad</th>
-                    <th>Estado</th>
-                    <th>Contactos</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                </tbody>
-        </table>
-
-    </div>
+            <div class="table-container">
+                <table id="tabla-colaboradores">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Entidad</th>
+                            <th>Código</th>
+                            <th>Localidad</th>
+                            <th>Estado</th>
+                            <th>Contactos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" style="text-align:center;">Cargando colaboradores...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
     <script src="js/api.js"></script>
     <script src="js/navegacion.js"></script>
