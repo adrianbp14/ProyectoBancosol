@@ -27,8 +27,6 @@ public class Usuario {
 
     private Boolean activo;
 
-    private LocalDateTime ultimo_acceso;
-
     @ManyToOne
     @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;

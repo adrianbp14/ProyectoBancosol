@@ -25,4 +25,14 @@ public interface TiendaRepository extends JpaRepository<Tienda, Integer> {
     List<Tienda> findTiendasByCoordinadorAndCampana(
             @Param("idUsuario") Integer idUsuario,
             @Param("idCampana") Integer idCampana);
+
+    @Query("SELECT t FROM Tienda t WHERE t.usuario.id_usuario = :idUsuario")
+    List<Tienda> findByUsuarioId(@Param("idUsuario") Integer idUsuario);
+
+    @Query(value = "SELECT v.nombre, v.apellidos, v.telefono, v.email " +
+            "FROM voluntario v " +
+            "JOIN asignacion_voluntario_detalle avd ON v.id_voluntario = avd.id_voluntario " +
+            "JOIN asignacion_voluntarios av ON avd.id_asignacion = av.id_asignacion " +
+            "WHERE av.id_tienda = :idTienda", nativeQuery = true)
+    List<Object[]> findVoluntariosByTiendaId(@Param("idTienda") Integer idTienda);
 }

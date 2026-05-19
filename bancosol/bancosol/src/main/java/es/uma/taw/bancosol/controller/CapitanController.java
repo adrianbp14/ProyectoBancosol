@@ -2,6 +2,8 @@ package es.uma.taw.bancosol.controller;
 
 import es.uma.taw.bancosol.dao.*;
 import es.uma.taw.bancosol.dto.PersonalLogisticaDTO;
+import es.uma.taw.bancosol.dto.TiendasCapitanDTO;
+import es.uma.taw.bancosol.dto.VoluntarioResumenDTO;
 import es.uma.taw.bancosol.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class CapitanController {
     private RolRepository rolRepository;
     @Autowired
     private LocalidadRepository localidadRepository;
+    @Autowired
+    private TiendaRepository tiendaRepository;
 
     @GetMapping
     public ResponseEntity<List<Capitan>> listarCapitanes() {
@@ -105,6 +109,50 @@ public class CapitanController {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al borrar: No se puede eliminar si está asignado a tiendas.");
+        }
+    }
+
+    @GetMapping("/{idUsuario}/tiendas-voluntarios")
+    public ResponseEntity<?> obtenerTiendasYVoluntarios(@PathVariable Integer idUsuario) {
+        try {
+            // 1. Validamos que el capitán exista usando el id_usuario del login
+            Capitan capitan = capitanRepository.findByUsuarioId(idUsuario)
+                    .orElseThrow(() -> new RuntimeException("No existe un capitán para este usuario."));
+
+            // 2. Buscamos sus tiendas asociadas
+            List<Tienda> tiendas = tiendaRepository.findByUsuarioId(idUsuario);
+
+            // 3. Construimos la respuesta mapeando los DTOs separados
+            List<TiendasCapitanDTO> resultadoDTO = tiendas.stream().map(tienda -> {
+
+                // Sacamos los voluntarios asociados a esta iteración de tienda
+                List<Object[]> voluntariosRaw = tiendaRepository.findVoluntariosByTiendaId(tienda.getIdTienda());
+
+                // Mapeamos los objetos crudos (Object[]) al DTO independiente de Voluntario
+                List<VoluntarioResumenDTO> listaVoluntarios = voluntariosRaw.stream().map(obj ->
+                        new VoluntarioResumenDTO(
+                                obj[0] != null ? obj[0].toString() : "",
+                                obj[1] != null ? obj[1].toString() : "",
+                                obj[2] != null ? obj[2].toString() : "No disponible",
+                                obj[3] != null ? obj[3].toString() : "No disponible"
+                        )
+                ).collect(java.util.stream.Collectors.toList());
+
+                // Retornamos el DTO de la tienda que incluye la lista de sus voluntarios
+                return new TiendasCapitanDTO(
+                        tienda.getIdTienda(),
+                        tienda.getResenaNombre(),
+                        tienda.getDomicilio(),
+                        tienda.getCodigoPostal(),
+                        listaVoluntarios
+                );
+            }).collect(java.util.stream.Collectors.toList());
+
+            return ResponseEntity.ok(resultadoDTO);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error al procesar las tiendas del capitán: " + e.getMessage());
         }
     }
 }
